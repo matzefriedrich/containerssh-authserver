@@ -25,7 +25,7 @@ type authServerApplication struct {
 // Run starts the application server and listens on the configured port. Returns an error if the server fails to start.
 func (a *authServerApplication) Run(_ context.Context) error {
 
-	a.logger.Info().Msg("Starting authserver")
+	a.logger.Info().Msgf("Starting %s", a.applicationInfo.ReleaseName)
 	a.logger.Info().Msgf("Version: %s", a.applicationInfo.VersionString())
 	a.logger.Info().Msgf("Port: %d", a.config.Port)
 

@@ -45,11 +45,12 @@ func ApplicationConfigurationModule(registry types.ServiceRegistry) error {
 
 func getApplicationInfo(configurationFilesPath string, configurationType string) *configuration.ApplicationInfo {
 	info := &configuration.ApplicationInfo{
-		Version:           internal.Version,
-		Commit:            utils.IIf(len(internal.CommitSha) > 0, internal.CommitSha, "not set"),
-		ReleaseName:       utils.IIf(len(internal.ReleaseName) > 0, internal.ReleaseName, "authserver"),
+		Commit:            utils.IIf(len(internal.CommitSha) > 0, internal.CommitSha, ""),
 		ConfigurationPath: configurationFilesPath,
 		ConfigurationType: configurationType,
+		ReleaseDate:       internal.ReleaseDate,
+		ReleaseName:       utils.IIf(len(internal.ReleaseName) > 0, internal.ReleaseName, "authserver"),
+		Version:           internal.Version,
 	}
 	return info
 }
