@@ -25,17 +25,20 @@ type authServerApplication struct {
 // Run starts the application server and listens on the configured port. Returns an error if the server fails to start.
 func (a *authServerApplication) Run(_ context.Context) error {
 
+	a.printApplicationInfo()
+	a.printBanner()
+
+	listenAddress := fmt.Sprintf(":%d", a.config.Port)
+	return a.app.Listen(listenAddress)
+}
+
+func (a *authServerApplication) printApplicationInfo() {
 	a.logger.Info().Msgf("Starting %s", a.applicationInfo.ReleaseName)
 	a.logger.Info().Msgf("Version: %s", a.applicationInfo.VersionString())
 	a.logger.Info().Msgf("Port: %d", a.config.Port)
 
 	a.logger.Info().Msgf("Configuration path: %s", a.applicationInfo.ConfigurationPath)
 	a.logger.Info().Msgf("Configuration type: %s", a.applicationInfo.ConfigurationType)
-
-	a.printBanner()
-
-	listenAddress := fmt.Sprintf(":%d", a.config.Port)
-	return a.app.Listen(listenAddress)
 }
 
 func (a *authServerApplication) printBanner() {
