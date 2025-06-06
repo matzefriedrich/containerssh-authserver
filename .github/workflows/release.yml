@@ -1,0 +1,34 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches-ignore:
+      - feature/*
+      - fix/*
+    tags:
+      - "v*"
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: | 
+
+          APP_RELEASE_DATE=$(date -u +%Y-%m-%d)
+          APP_VERSION=${{ github.ref_name }}
+          IMAGE_NAME="mobymatze/containerssh-authserver"
+
+          docker build \
+            --build-arg APP_RELEASE_DATE="$APP_RELEASE_DATE" \
+            --build-arg APP_RELEASE="$GITHUB_REPOSITORY" \
+            --build-arg APP_VERSION="$APP_VERSION" \
+            --build-arg CI_COMMIT_SHORT_SHA="$GITHUB_SHA" \
+            -t "$IMAGE_NAME:$APP_VERSION" \
+            -f Dockerfile .
