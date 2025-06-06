@@ -1,3 +1,9 @@
+[![CI](https://github.com/matzefriedrich/containerssh-authserver/actions/workflows/go.yml/badge.svg)](https://github.com/matzefriedrich/containerssh-authserver/actions/workflows/go.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/matzefriedrich/containerssh-authserver)](https://goreportcard.com/report/github.com/matzefriedrich/containerssh-authserver)
+![License](https://img.shields.io/github/license/matzefriedrich/containerssh-authserver)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/matzefriedrich/containerssh-authserver)
+![GitHub Release](https://img.shields.io/github/v/release/matzefriedrich/containerssh-authserver?include_prereleases)
+
 # containerssh-authserver
 
 **containerssh-authserver** is a configurable authentication server application designed to work with [ContainerSSH](https://containerssh.io/) as a webhook backend, by implementing the [ContainerSSH authentication API](https://containerssh.io/v0.5/reference/api/authconfig) . It allows user-specific Docker container profiles to be defined in a simple YAML configuration file, enabling per-user images, shell commands, bind-mounts and network connections.
