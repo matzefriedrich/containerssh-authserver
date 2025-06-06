@@ -1,2 +1,5 @@
 .idea/
 .vscode/
+
+*.pem
+*.pem.pub

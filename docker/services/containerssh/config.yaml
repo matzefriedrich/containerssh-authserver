@@ -1,0 +1,17 @@
+---
+ssh:
+  listen: "0.0.0.0:2222"
+  hostkeys:
+    - /var/secrets/ssh_host_rsa_key
+
+log:
+  level: debug
+
+auth:
+  publicKey:
+    method: webhook
+    webhook:
+      url: "http://nginx-authserver-proxy:8080"
+
+configserver:
+  url: "http://nginx-authserver-proxy:8080/config"

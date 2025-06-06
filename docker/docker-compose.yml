@@ -1,0 +1,58 @@
+services:
+
+  authserver:
+    image: mobymatze/containerssh-authserver
+    build: 
+      context: ../
+      dockerfile: Dockerfile
+
+    restart: on-failure
+
+    environment:
+      AUTHSERVER_CONFIG_PATH: "/var/run/authserver"
+
+    volumes:
+      - "./services/authserver/config.yaml:/var/run/authserver/config.yaml:ro"
+
+    deploy:
+      replicas: 2
+
+    networks:
+      - backend
+
+  nginx-authserver-proxy:
+    image: nginx:alpine3.18
+    restart: unless-stopped
+
+    volumes:
+    - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+    depends_on:
+      - authserver
+
+    networks:
+      - backend
+
+  containerssh:
+    image: containerssh/containerssh:v0.5.2
+    ports:
+      - 2222:2222
+
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ./services/containerssh/config.yaml:/etc/containerssh/config.yaml:ro
+    - ./keys/ssh_host_rsa_key.pem:/var/secrets/ssh_host_rsa_key
+
+    user: "root"
+    networks:
+      - backend
+      - containerssh-control-plane
+
+networks:
+
+  backend:
+    driver: bridge
+
+  containerssh-control-plane:
+    driver: bridge
+    

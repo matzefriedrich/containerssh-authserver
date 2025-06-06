@@ -1,0 +1,17 @@
+app:
+
+  port: 5000
+
+  logLevel: Debug
+
+  authServer:
+    users:
+
+      - johndoe:
+          publicKeys:
+            - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINDXkAyatiBi0GT6sCoKATRlfjT1VFci83ACcsoBCrnR johndoe@localhost"
+
+          image: alpine:3.21
+          shellCommand: /bin/sh
+          binds:
+          networks:
