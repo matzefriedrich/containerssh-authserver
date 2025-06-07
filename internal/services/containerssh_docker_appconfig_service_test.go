@@ -3,10 +3,10 @@ package services
 import (
 	"errors"
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
 	"github.com/matzefriedrich/parsley/pkg/features"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
-	"go.containerssh.io/containerssh/config"
 	"testing"
 )
 
@@ -25,7 +25,7 @@ func Test_CreateApplicationConfigFor_returns_error_if_user_not_found(t *testing.
 
 	// Assert
 	assert.Error(t, err)
-	assert.Equal(t, config.AppConfig{}, actual)
+	assert.Equal(t, shims.AppConfigShim{}, actual)
 
 	profileServiceMock.Verify(FunctionGetProfile, features.TimesOnce(), features.Exact(authenticatedUser))
 }
@@ -53,7 +53,7 @@ func Test_CreateApplicationConfigFor_returns_docker_container_configuration_for_
 
 	// Assert
 	assert.NoError(t, err)
-	assert.Equal(t, expectedDockerImage, actual.Docker.Execution.DockerLaunchConfig.ContainerConfig.Image)
+	assert.Equal(t, expectedDockerImage, actual.Docker.Execution.DockerLaunchConfigShim.ContainerConfig.Image)
 
 	_, found := actual.Docker.Execution.NetworkConfig.EndpointsConfig[expectedContainerNetworkName]
 	assert.True(t, found)
