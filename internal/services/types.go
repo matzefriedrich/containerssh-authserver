@@ -2,8 +2,7 @@ package services
 
 import (
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
-
-	"go.containerssh.io/containerssh/config"
+	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -14,8 +13,8 @@ type UserProfileService interface {
 	VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)
 }
 
-var InvalidAppConfig config.AppConfig
+var InvalidAppConfig shims.AppConfigShim
 
 type ContainerAppConfigService interface {
-	CreateApplicationConfigFor(authenticatedUser string) (config.AppConfig, error)
+	CreateApplicationConfigFor(authenticatedUser string) (shims.AppConfigShim, error)
 }

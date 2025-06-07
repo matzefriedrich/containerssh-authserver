@@ -6,8 +6,8 @@ package services
 
 import (
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
 	"github.com/matzefriedrich/parsley/pkg/features"
-	"go.containerssh.io/containerssh/config"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -62,13 +62,13 @@ type containerAppConfigServiceMock struct {
 	CreateApplicationConfigForFunc CreateApplicationConfigForFunc
 }
 
-type CreateApplicationConfigForFunc func(authenticatedUser string) (config.AppConfig, error)
+type CreateApplicationConfigForFunc func(authenticatedUser string) (shims.AppConfigShim, error)
 
 const (
 	FunctionCreateApplicationConfigFor = "CreateApplicationConfigFor"
 )
 
-func (m *containerAppConfigServiceMock) CreateApplicationConfigFor(authenticatedUser string) (config.AppConfig, error) {
+func (m *containerAppConfigServiceMock) CreateApplicationConfigFor(authenticatedUser string) (shims.AppConfigShim, error) {
 	m.TraceMethodCall(FunctionCreateApplicationConfigFor, authenticatedUser)
 	return m.CreateApplicationConfigForFunc(authenticatedUser)
 }
@@ -79,12 +79,12 @@ var _ ContainerAppConfigService = (*containerAppConfigServiceMock)(nil)
 func NewContainerAppConfigServiceMock() *containerAppConfigServiceMock {
 	mock := &containerAppConfigServiceMock{
 		MockBase: features.NewMockBase(),
-		CreateApplicationConfigForFunc: func(authenticatedUser string) (config.AppConfig, error) {
-			var result0 config.AppConfig
+		CreateApplicationConfigForFunc: func(authenticatedUser string) (shims.AppConfigShim, error) {
+			var result0 shims.AppConfigShim
 			var result1 error
 			return result0, result1
 		},
 	}
-	mock.AddFunction(FunctionCreateApplicationConfigFor, "CreateApplicationConfigFor(authenticatedUser string) (config.AppConfig, error)")
+	mock.AddFunction(FunctionCreateApplicationConfigFor, "CreateApplicationConfigFor(authenticatedUser string) (shims.AppConfigShim, error)")
 	return mock
 }

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
+	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
 	"github.com/rs/zerolog"
-	"go.containerssh.io/containerssh/config"
 )
 
 type dockerAppConfigService struct {
@@ -15,7 +15,7 @@ type dockerAppConfigService struct {
 
 // CreateApplicationConfigFor creates and returns an application configuration for the specified authenticated username.
 // It retrieves the user profile, constructs a Docker container configuration, and handles necessary setup based on user profile information.
-func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsername string) (config.AppConfig, error) {
+func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsername string) (shims.AppConfigShim, error) {
 
 	d.logger.Info().Msgf("Created application config for user %s", authenticatedUsername)
 
@@ -32,18 +32,18 @@ func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsernam
 		endpointsConfig[networkName] = &network.EndpointSettings{}
 	}
 
-	cfg := config.AppConfig{
-		Backend: config.BackendDocker,
-		Docker: config.DockerConfig{
-			Connection: config.DockerConnectionConfig{
+	cfg := shims.AppConfigShim{
+		Backend: shims.BackendDocker,
+		Docker: shims.DockerConfigShim{
+			Connection: shims.DockerConnectionConfigShim{
 				Host: "unix:///var/run/docker.sock",
 			},
-			Execution: config.DockerExecutionConfig{
-				ImagePullPolicy: config.ImagePullPolicyIfNotPresent,
+			Execution: shims.DockerExecutionConfigShim{
+				ImagePullPolicy: shims.ImagePullPolicyIfNotPresent,
 				DisableAgent:    true,
-				Mode:            config.DockerExecutionModeSession,
+				Mode:            shims.DockerExecutionModeSession,
 				ShellCommand:    profile.ShellCommand,
-				DockerLaunchConfig: config.DockerLaunchConfig{
+				DockerLaunchConfigShim: shims.DockerLaunchConfigShim{
 					ContainerName: containerName,
 					HostConfig: &container.HostConfig{
 						Privileged: false,
