@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types/shims"
 )
 
 type ConfigDockerResponse struct {

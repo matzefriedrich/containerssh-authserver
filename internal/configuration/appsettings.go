@@ -3,6 +3,7 @@ package configuration
 import (
 	"errors"
 	"fmt"
+
 	"github.com/spf13/viper"
 )
 
@@ -17,11 +18,12 @@ type AuthServerConfig struct {
 }
 
 type UserProfile struct {
-	Binds        []string `mapstructure:"binds"`
-	Image        string   `mapstructure:"image"`
-	Networks     []string `mapstructure:"networks"`
-	PublicKeys   []string `mapstructure:"publicKeys"`
-	ShellCommand []string `mapstructure:"shellCommand"`
+	Binds          []string          `mapstructure:"binds"`
+	Image          string            `mapstructure:"image"`
+	Networks       []string          `mapstructure:"networks"`
+	PublicKeys     []string          `mapstructure:"publicKeys"`
+	ShellCommand   []string          `mapstructure:"shellCommand"`
+	StorageOptions map[string]string `mapstructure:"storageOptions", default:"{}"`
 }
 
 // LoadApplicationSettings populates the provided ApplicationConfiguration instance with values from the app config section.

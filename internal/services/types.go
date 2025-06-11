@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
-	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types/shims"
 	"golang.org/x/crypto/ssh"
 )
 

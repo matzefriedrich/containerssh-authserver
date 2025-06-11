@@ -2,12 +2,13 @@ package services
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
-	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types/shims"
 	"github.com/matzefriedrich/parsley/pkg/features"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func Test_CreateApplicationConfigFor_returns_error_if_user_not_found(t *testing.T) {
