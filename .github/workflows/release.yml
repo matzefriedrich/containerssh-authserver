@@ -34,7 +34,8 @@ jobs:
           echo "Tag ${{ github.ref_name }} points to commit: $TAG_COMMIT"
           
           # Check if this commit exists in the main branch
-          if git merge-base --is-ancestor $TAG_COMMIT origin/main; then
+          BRANCH_NAME=$(git branch -r --contains "$TAG_COMMIT" | grep -Eo 'origin/main' | head -n 1)
+          if [ "$BRANCH_NAME" != "origin/main" ]; then 
             echo "Tag ${{ github.ref_name }} points to a commit on main branch"
             echo "continue=true" >> $GITHUB_OUTPUT
           else
