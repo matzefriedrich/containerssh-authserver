@@ -25,8 +25,6 @@ func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsernam
 		return InvalidAppConfig, fmt.Errorf("cannot load user profile: %s", profileErr)
 	}
 
-	containerName := fmt.Sprintf("containerssh-session-%s", authenticatedUsername)
-
 	endpointsConfig := map[string]*network.EndpointSettings{}
 	for _, networkName := range profile.Networks {
 		endpointsConfig[networkName] = &network.EndpointSettings{}
@@ -44,7 +42,6 @@ func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsernam
 				Mode:            shims.DockerExecutionModeSession,
 				ShellCommand:    profile.ShellCommand,
 				DockerLaunchConfigShim: shims.DockerLaunchConfigShim{
-					ContainerName: containerName,
 					HostConfig: &container.HostConfig{
 						Privileged: false,
 						AutoRemove: true,
