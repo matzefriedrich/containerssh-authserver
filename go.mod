@@ -3,7 +3,7 @@ module github.com/matzefriedrich/containerssh-authserver
 go 1.24.0
 
 require (
-	github.com/docker/docker v28.2.2+incompatible
+	github.com/docker/docker v28.3.1+incompatible
 	github.com/gofiber/contrib/fiberzerolog v1.0.3
 	github.com/gofiber/fiber/v2 v2.52.8
 	github.com/matzefriedrich/parsley v1.0.13
