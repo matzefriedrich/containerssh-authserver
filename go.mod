@@ -1,6 +1,6 @@
 module github.com/matzefriedrich/containerssh-authserver
 
-go 1.24.0
+go 1.25
 
 require (
 	github.com/docker/docker v28.2.2+incompatible
