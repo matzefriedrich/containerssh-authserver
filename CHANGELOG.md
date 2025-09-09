@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumps `golang` from 1.24-alpine to 1.25-alpine [#14](https://github.com/matzefriedrich/containerssh-authserver/pull/14)
 - Bumps `github.com/stretchr/testify` from 1.10.0 to 1.11.1 [#15](https://github.com/matzefriedrich/containerssh-authserver/pull/15)
 - Bumps `github.com/docker/docker` from 28.2.2+incompatible to 28.4.0+incompatible [#16](https://github.com/matzefriedrich/containerssh-authserver/pull/16)
+- Bumps `github.com/matzefriedrich/parsley` from 1.0.13 to 1.1.3 [#17](https://github.com/matzefriedrich/containerssh-authserver/pull/17)
 
 
 ## [v0.2.0] - 2025-06-07
