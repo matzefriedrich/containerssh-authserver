@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumps `golang.org/x/crypto` from 0.39.0 to 0.41.0 [#10](https://github.com/matzefriedrich/containerssh-authserver/pull/10)
 - Updates the Go version from 1.24.0 to 1.25
 - Bumps `golang` from 1.24-alpine to 1.25-alpine [#14](https://github.com/matzefriedrich/containerssh-authserver/pull/14)
+- Bumps `github.com/stretchr/testify` from 1.10.0 to 1.11.1 [#15](https://github.com/matzefriedrich/containerssh-authserver/pull/15)
 
 
 ## [v0.2.0] - 2025-06-07
