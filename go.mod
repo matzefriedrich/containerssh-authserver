@@ -1,12 +1,12 @@
 module github.com/matzefriedrich/containerssh-authserver
 
-go 1.25
+go 1.25.3
 
 require (
 	github.com/docker/docker v28.5.1+incompatible
 	github.com/gofiber/contrib/fiberzerolog v1.0.3
 	github.com/gofiber/fiber/v2 v2.52.9
-	github.com/matzefriedrich/parsley v1.1.4
+	github.com/matzefriedrich/parsley v1.2.1
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
