@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bumps `github.com/spf13/viper` from 1.20.1 to 1.21.0 [#19](https://github.com/matzefriedrich/containerssh-authserver/pull/19)
 * Bumps `golang.org/x/crypto` from 0.41.0 to 0.43.0 [#22](https://github.com/matzefriedrich/containerssh-authserver/pull/22/)
 * Bumps `github.com/docker/docker` from 28.4.0+incompatible to 28.5.1+incompatible [#23](https://github.com/matzefriedrich/containerssh-authserver/pull/23)
-* Bumps `github.com/matzefriedrich/parsley` from 1.1.4 to 1.2.1 [#24](https://github.com/matzefriedrich/containerssh-authserver/pull/24)
+* Bumps `github.com/matzefriedrich/parsley` from 1.1.4 to 1.3.0 [#25](https://github.com/matzefriedrich/containerssh-authserver/pull/25)
 
 
 ## [v0.2.2] - 2025-09-09
