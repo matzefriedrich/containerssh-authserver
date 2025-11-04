@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v0.2.3] - 2025-11-04
 
 * Bumps `github.com/spf13/viper` from 1.20.1 to 1.21.0 [#19](https://github.com/matzefriedrich/containerssh-authserver/pull/19)
+* Bumps `golang.org/x/crypto` from 0.41.0 to 0.43.0 [#22](https://github.com/matzefriedrich/containerssh-authserver/pull/22/)
 
 
 ## [v0.2.2] - 2025-09-09
