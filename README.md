@@ -1,4 +1,5 @@
 [![CI](https://github.com/matzefriedrich/containerssh-authserver/actions/workflows/go.yml/badge.svg)](https://github.com/matzefriedrich/containerssh-authserver/actions/workflows/go.yml)
+[![Docker Image CI](https://github.com/matzefriedrich/containerssh-authserver/actions/workflows/release.yml/badge.svg)](https://github.com/matzefriedrich/containerssh-authserver/actions/workflows/release.yml)
 [![Coverage Status](https://coveralls.io/repos/github/matzefriedrich/containerssh-authserver/badge.svg?branch=main)](https://coveralls.io/github/matzefriedrich/containerssh-authserver?branch=main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/matzefriedrich/containerssh-authserver)](https://goreportcard.com/report/github.com/matzefriedrich/containerssh-authserver)
 ![License](https://img.shields.io/github/license/matzefriedrich/containerssh-authserver)
