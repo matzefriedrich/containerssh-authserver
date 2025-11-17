@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.2.5] - 2025-11-17
+
+* Bumps `golang.org/x/crypto` from 0.43.0 to 0.44.0 [#27](https://github.com/matzefriedrich/containerssh-authserver/pull/27)
+
+
 ## [v0.2.4] - 2025-11-16
 
 * Bumps `github.com/docker/docker` from 28.5.1+incompatible to 28.5.2+incompatible [#26](https://github.com/matzefriedrich/containerssh-authserver/pull/26)
