@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Bumps `golang.org/x/crypto` from 0.43.0 to 0.44.0 [#27](https://github.com/matzefriedrich/containerssh-authserver/pull/27)
 * Updates the Go version to 1.25.4 [#29](https://github.com/matzefriedrich/containerssh-authserver/pull/29)
+* Bumps indirect dependencies to their latest versions [#30](https://github.com/matzefriedrich/containerssh-authserver/pull/30)
 
 
 ## [v0.2.4] - 2025-11-16
