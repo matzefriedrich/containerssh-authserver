@@ -51,12 +51,12 @@ jobs:
           APP_RELEASE_DATE=$(date -u +%Y-%m-%d)
           APP_VERSION="${{ github.ref_name }}"
           if [ "${{ github.ref_type }}" = "branch" ]; then
-            APP_VERSION="${{ github.sha }}"
+            APP_VERSION="${GITHUB_SHA::8}"
           fi
 
           IMAGE_NAME="mobymatze/containerssh-authserver"
           IMAGE_NAME_WITH_TAG="$IMAGE_NAME:$APP_VERSION"
-          echo $IMAGE_NAME_WITH_TAG >> $GITHUB_OUTPUT
+          echo "qualified_image_tag=$IMAGE_NAME_WITH_TAG" >> $GITHUB_OUTPUT
 
           docker build \
             --build-arg APP_RELEASE_DATE="$APP_RELEASE_DATE" \
