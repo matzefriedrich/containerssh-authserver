@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - feature/*
       - fix/*
+      - dependabot/*
     tags:
       - "v*"
 
@@ -44,18 +45,25 @@ jobs:
           fi
 
       - name: Build the Docker image
-        run: | 
+        id: docker-build
+        run: |
 
           APP_RELEASE_DATE=$(date -u +%Y-%m-%d)
-          APP_VERSION=${{ github.ref_name }}
+          APP_VERSION="${{ github.ref_name }}"
+          if [ "${{ github.ref_type }}" = "branch" ]; then
+            APP_VERSION="${{ github.sha }}"
+          fi
+
           IMAGE_NAME="mobymatze/containerssh-authserver"
+          IMAGE_NAME_WITH_TAG="$IMAGE_NAME:$APP_VERSION"
+          echo $IMAGE_NAME_WITH_TAG >> $GITHUB_OUTPUT
 
           docker build \
             --build-arg APP_RELEASE_DATE="$APP_RELEASE_DATE" \
             --build-arg APP_RELEASE="$GITHUB_REPOSITORY" \
             --build-arg APP_VERSION="$APP_VERSION" \
             --build-arg CI_COMMIT_SHORT_SHA="$GITHUB_SHA" \
-            -t "$IMAGE_NAME:$APP_VERSION" \
+            -t "$IMAGE_NAME_WITH_TAG" \
             -f Dockerfile .
            
       - name: Login to Docker Hub
