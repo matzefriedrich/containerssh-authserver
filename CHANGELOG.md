@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bumps `golang.org/x/crypto` from 0.44.0 to 0.45.0 [#31](https://github.com/matzefriedrich/containerssh-authserver/pull/31)
 * Bumps `github.com/gofiber/fiber/v2` from 2.52.9 to 2.52.10 [#32](https://github.com/matzefriedrich/containerssh-authserver/pull/32)
 * Upgrades Go version to `1.25.5`
-* Bumps `golang.org/x/crypto` from 0.45.0 to 0.46.0
+* Bumps `golang.org/x/crypto` from 0.45.0 to 0.46.0 [#33](https://github.com/matzefriedrich/containerssh-authserver/pull/33)
 
 
 ## [v0.2.5] - 2025-11-17
