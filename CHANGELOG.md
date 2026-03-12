@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [v0.2.7] - 2026-03-12
 
 * Bumps `github.com/matzefriedrich/parsley` from 1.3.0 to 1.3.2 [#37](https://github.com/matzefriedrich/containerssh-authserver/pull/37)
 * Bumps `golang.org/x/crypto` from 0.46.0 to 0.48.0 [#38](https://github.com/matzefriedrich/containerssh-authserver/pull/38)
 * Bumps `golang` from 1.25-alpine to 1.26-alpine [#39](https://github.com/matzefriedrich/containerssh-authserver/pull/39)
 * Bumps `github.com/gofiber/fiber/v2` from 2.52.10 to 2.52.12 [#40](https://github.com/matzefriedrich/containerssh-authserver/pull/40)
+* Bumps Go version from 1.25.7 to 1.26.1 [#41](https://github.com/matzefriedrich/containerssh-authserver/pull/41)
 
 
 ## [v0.2.6] - 2025-01-08
