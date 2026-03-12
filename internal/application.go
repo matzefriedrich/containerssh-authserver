@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io/fs"
 
 	fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
 	"github.com/gofiber/fiber/v3"
@@ -48,7 +49,9 @@ func (a *authServerApplication) printApplicationInfo() {
 func (a *authServerApplication) printBanner() {
 
 	bannerFile, _ := resources.Resources.Open(resources.BannerTxt)
-	defer bannerFile.Close()
+	defer func(bannerFile fs.File) {
+		_ = bannerFile.Close()
+	}(bannerFile)
 
 	scanner := bufio.NewScanner(bannerFile)
 	for scanner.Scan() {
