@@ -13,8 +13,8 @@
 
 ## Prerequisites
 
-* Go 1.24 or newer (for building from source)
-* Docker 20.10+ (or compatible), with Docker Compose (for the demo)
+* Go 1.26 or newer (for building from source)
+* Docker 20.10+ (or compatible), with Docker Compose (for the demo), Docker API version 1.41 
 * openssl, ssh-keygen
 
 ## Quick start
@@ -50,3 +50,15 @@ Once started, you can connect to `containerssh` as `johndoe` using the generated
 ```sh
 ssh -i docker/keys/johndoe.pem -p 2222 johndoe@localhost 
 ```
+
+### SSH: Too Many Authentication Failures
+
+If you have many keys loaded in `ssh-agent`, SSH may attempt to authenticate with all of them before using the key you specify with `-i`. ContainerSSH limits the number of authentication attempts, which can cause the connection to fail before the correct key is tried.
+
+To prevent SSH from offering all agent keys, use the `IdentitiesOnly=yes` option:
+
+```bash
+ssh -o IdentitiesOnly=yes -i docker/keys/johndoe.pem -p 2222 johndoe@localhost
+```
+
+This tells SSH to use **only the explicitly specified identity file** and ignore any keys loaded in `ssh-agent`.

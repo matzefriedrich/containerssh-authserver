@@ -4,14 +4,16 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/gofiber/contrib/fiberzerolog"
+	"io/fs"
+
+	fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
+	"github.com/gofiber/fiber/v3"
 	"github.com/matzefriedrich/containerssh-authserver/internal/resources"
 	"github.com/rs/zerolog"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/matzefriedrich/parsley/pkg/bootstrap"
 )
 
@@ -23,13 +25,16 @@ type authServerApplication struct {
 }
 
 // Run starts the application server and listens on the configured port. Returns an error if the server fails to start.
-func (a *authServerApplication) Run(_ context.Context) error {
+func (a *authServerApplication) Run(ctx context.Context) error {
 
 	a.printApplicationInfo()
 	a.printBanner()
 
 	listenAddress := fmt.Sprintf(":%d", a.config.Port)
-	return a.app.Listen(listenAddress)
+	return a.app.Listen(listenAddress, fiber.ListenConfig{
+		GracefulContext:       ctx,
+		DisableStartupMessage: true,
+	})
 }
 
 func (a *authServerApplication) printApplicationInfo() {
@@ -44,7 +49,9 @@ func (a *authServerApplication) printApplicationInfo() {
 func (a *authServerApplication) printBanner() {
 
 	bannerFile, _ := resources.Resources.Open(resources.BannerTxt)
-	defer bannerFile.Close()
+	defer func(bannerFile fs.File) {
+		_ = bannerFile.Close()
+	}(bannerFile)
 
 	scanner := bufio.NewScanner(bannerFile)
 	for scanner.Scan() {

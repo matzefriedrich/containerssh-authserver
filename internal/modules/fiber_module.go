@@ -1,7 +1,7 @@
 package modules
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/matzefriedrich/parsley/pkg/registration"
 	"github.com/matzefriedrich/parsley/pkg/types"
 )
@@ -11,13 +11,12 @@ func FiberModule(registry types.ServiceRegistry) error {
 
 	const applicationName = "authserver"
 
-	registration.RegisterInstance(registry, fiber.Config{
-		DisableStartupMessage: true,
-		AppName:               applicationName,
-		Immutable:             true,
+	_ = registration.RegisterInstance(registry, fiber.Config{
+		AppName:   applicationName,
+		Immutable: true,
 	})
 
-	registry.Register(newFiber, types.LifetimeSingleton)
+	_ = registry.Register(newFiber, types.LifetimeSingleton)
 
 	return nil
 }

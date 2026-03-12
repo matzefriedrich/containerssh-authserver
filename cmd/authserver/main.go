@@ -17,11 +17,11 @@ func main() {
 
 	err := bootstrap.RunParsleyApplication(ctx, internal.NewFiberApp, func(registry types.ServiceRegistry) error {
 
-		registry.RegisterModule(modules.ApplicationConfigurationModule)
-		registry.RegisterModule(modules.LoggingModule)
-		registry.RegisterModule(modules.FiberModule)
-		registry.RegisterModule(modules.RouteHandlersModule)
-		registry.RegisterModule(modules.ApplicationServicesModule)
+		_ = registry.RegisterModule(modules.ApplicationConfigurationModule)
+		_ = registry.RegisterModule(modules.LoggingModule)
+		_ = registry.RegisterModule(modules.FiberModule)
+		_ = registry.RegisterModule(modules.RouteHandlersModule)
+		_ = registry.RegisterModule(modules.ApplicationServicesModule)
 
 		return nil
 	})

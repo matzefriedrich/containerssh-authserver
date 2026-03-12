@@ -1,9 +1,10 @@
 package modules
 
 import (
+	"os"
+
 	"github.com/matzefriedrich/containerssh-authserver/internal"
 	"github.com/matzefriedrich/containerssh-authserver/internal/utils"
-	"os"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 
@@ -38,7 +39,7 @@ func ApplicationConfigurationModule(registry types.ServiceRegistry) error {
 	}
 
 	info := getApplicationInfo(configurationFilesPath, configurationType)
-	registration.RegisterInstance(registry, info)
+	_ = registration.RegisterInstance(registry, info)
 
 	return registration.RegisterInstance(registry, settings)
 }

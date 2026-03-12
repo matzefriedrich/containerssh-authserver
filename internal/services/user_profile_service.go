@@ -3,6 +3,7 @@ package services
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
@@ -27,18 +28,21 @@ func (u *staticUserConfigurationProfileService) VerifyPublicKey(username string,
 
 	profile, err := u.GetProfile(username)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("failed to get user profile: %w", err)
 	}
 
 	expectedKeyBytes := expectedKey.Marshal()
 	for _, formattedPublicKey := range profile.PublicKeys {
-		key, _, _, _, _ := ssh.ParseAuthorizedKey([]byte(formattedPublicKey))
+		key, _, _, _, sshParseKeyErr := ssh.ParseAuthorizedKey([]byte(formattedPublicKey))
+		if sshParseKeyErr != nil {
+			return false, fmt.Errorf("failed to parse public key: %w", sshParseKeyErr)
+		}
 		if bytes.Equal(key.Marshal(), expectedKeyBytes) {
 			return true, nil
 		}
 	}
 
-	return false, nil
+	return false, fmt.Errorf("no matching public key found")
 }
 
 // GetProfile retrieves the user profile for the given authenticated username from the configuration.

@@ -1,13 +1,14 @@
 package handlers
 
 import (
-	"github.com/rs/zerolog"
 	"strings"
+
+	"github.com/rs/zerolog"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -23,12 +24,12 @@ func (h *pubKeyHookHandler) Register(app *fiber.App) {
 }
 
 // handlePublicKeyAuthenticationRequest processes a public key authentication request and verifies the provided public key.
-func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(c *fiber.Ctx) error {
+func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(c fiber.Ctx) error {
 
 	c.Accepts("json", "text")
 
 	request := &models.PubKeyRequest{}
-	if err := c.BodyParser(request); err != nil {
+	if err := c.Bind().Body(request); err != nil {
 		return err
 	}
 
@@ -37,14 +38,27 @@ func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(c *fiber.Ctx) e
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	h.logger.Info().Msgf("Received public key: %s", string(ssh.MarshalAuthorizedKey(requestPublicKey)))
+	authorizedKeyString := string(ssh.MarshalAuthorizedKey(requestPublicKey))
+	h.logger.Info().
+		Str("authorizedKey", authorizedKeyString).
+		Msgf("Received public key")
 
 	username := strings.TrimSpace(request.Username)
 
 	publicKeyAccepted, verificationErr := h.profileService.VerifyPublicKey(username, requestPublicKey)
 	if verificationErr != nil {
-		h.logger.Error().Msgf("Public key verification failed for user %s: %v", username, verificationErr)
-		return c.SendStatus(fiber.StatusForbidden)
+		h.logger.Error().
+			Err(verificationErr).
+			Str("connectionId", request.ConnectionId).
+			Str("username", username).
+			Msgf("Public key verification failed")
+	}
+
+	if publicKeyAccepted {
+		h.logger.Info().
+			Str("connectionId", request.ConnectionId).
+			Str("username", username).
+			Msgf("Public key verification succeeded")
 	}
 
 	response := &models.PubKeyResponse{

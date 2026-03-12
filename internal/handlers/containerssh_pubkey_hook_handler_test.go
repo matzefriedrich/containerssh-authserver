@@ -4,7 +4,12 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"github.com/gofiber/fiber/v2"
+	"io"
+	"net/http"
+	"strings"
+	"testing"
+
+	"github.com/gofiber/fiber/v3"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
 	"github.com/matzefriedrich/parsley/pkg/features"
@@ -12,10 +17,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
-	"io"
-	"net/http"
-	"strings"
-	"testing"
 )
 
 func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_public_key(t *testing.T) {
