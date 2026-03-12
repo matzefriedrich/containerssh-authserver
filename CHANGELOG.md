@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+* Upgraded the HTTP server stack to **Fiber v3** and updated request handling to match the new API. [#42](https://github.com/matzefriedrich/containerssh-authserver/pull/42)
+* Added **graceful shutdown support** to server startup. [#42](https://github.com/matzefriedrich/containerssh-authserver/pull/42)
+
+### Fixed
+
+* Improved **SSH public-key authentication** error handling by surfacing profile lookup, key parsing, and key mismatch failures more clearly. [#42](https://github.com/matzefriedrich/containerssh-authserver/pull/42)
+* Enhanced authentication and profile-loading **structured logging** for better observability during SSH requests. [#42](https://github.com/matzefriedrich/containerssh-authserver/pull/42)
+
+
 ## [v0.2.7] - 2026-03-12
+
+### Changed
 
 * Bumps `github.com/matzefriedrich/parsley` from 1.3.0 to 1.3.2 [#37](https://github.com/matzefriedrich/containerssh-authserver/pull/37)
 * Bumps `golang.org/x/crypto` from 0.46.0 to 0.48.0 [#38](https://github.com/matzefriedrich/containerssh-authserver/pull/38)
@@ -16,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.2.6] - 2025-01-08
 
+### Changed
+
 * Bumps `golang.org/x/crypto` from 0.44.0 to 0.45.0 [#31](https://github.com/matzefriedrich/containerssh-authserver/pull/31)
 * Bumps `github.com/gofiber/fiber/v2` from 2.52.9 to 2.52.10 [#32](https://github.com/matzefriedrich/containerssh-authserver/pull/32)
 * Upgrades Go version to `1.25.5`
@@ -24,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.2.5] - 2025-11-17
 
+### Changed
+
 * Bumps `golang.org/x/crypto` from 0.43.0 to 0.44.0 [#27](https://github.com/matzefriedrich/containerssh-authserver/pull/27)
 * Updates the Go version to 1.25.4 [#29](https://github.com/matzefriedrich/containerssh-authserver/pull/29)
 * Bumps indirect dependencies to their latest versions [#30](https://github.com/matzefriedrich/containerssh-authserver/pull/30)
@@ -31,10 +50,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.2.4] - 2025-11-16
 
+### Changed
+
 * Bumps `github.com/docker/docker` from 28.5.1+incompatible to 28.5.2+incompatible [#26](https://github.com/matzefriedrich/containerssh-authserver/pull/26)
 
 
 ## [v0.2.3] - 2025-11-04
+
+### Changed
 
 * Bumps `github.com/spf13/viper` from 1.20.1 to 1.21.0 [#19](https://github.com/matzefriedrich/containerssh-authserver/pull/19)
 * Bumps `golang.org/x/crypto` from 0.41.0 to 0.43.0 [#22](https://github.com/matzefriedrich/containerssh-authserver/pull/22/)
@@ -43,6 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [v0.2.2] - 2025-09-09
+
+### Changed
 
 - Bumps `github.com/gofiber/fiber/v2` from 2.52.8 to 2.52.9 [#8](https://github.com/matzefriedrich/containerssh-authserver/pull/8)
 - Bumps `golang.org/x/crypto` from 0.39.0 to 0.41.0 [#10](https://github.com/matzefriedrich/containerssh-authserver/pull/10)
