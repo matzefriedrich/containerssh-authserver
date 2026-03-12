@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
@@ -21,7 +22,9 @@ func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsernam
 
 	profile, profileErr := d.profileService.GetProfile(authenticatedUsername)
 	if profileErr != nil {
-		d.logger.Error().Msgf("Cannot load user profile: %s", profileErr)
+		d.logger.Error().Err(profileErr).
+			Str("authenticationUser", authenticatedUsername).
+			Msgf("Cannot load user profile: %s", profileErr)
 		return InvalidAppConfig, fmt.Errorf("cannot load user profile: %s", profileErr)
 	}
 

@@ -38,14 +38,27 @@ func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(c fiber.Ctx) er
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	h.logger.Info().Msgf("Received public key: %s", string(ssh.MarshalAuthorizedKey(requestPublicKey)))
+	authorizedKeyString := string(ssh.MarshalAuthorizedKey(requestPublicKey))
+	h.logger.Info().
+		Str("authorizedKey", authorizedKeyString).
+		Msgf("Received public key")
 
 	username := strings.TrimSpace(request.Username)
 
 	publicKeyAccepted, verificationErr := h.profileService.VerifyPublicKey(username, requestPublicKey)
 	if verificationErr != nil {
-		h.logger.Error().Msgf("Public key verification failed for user %s: %v", username, verificationErr)
-		return c.SendStatus(fiber.StatusForbidden)
+		h.logger.Error().
+			Err(verificationErr).
+			Str("connectionId", request.ConnectionId).
+			Str("username", username).
+			Msgf("Public key verification failed")
+	}
+
+	if publicKeyAccepted {
+		h.logger.Info().
+			Str("connectionId", request.ConnectionId).
+			Str("username", username).
+			Msgf("Public key verification succeeded")
 	}
 
 	response := &models.PubKeyResponse{
