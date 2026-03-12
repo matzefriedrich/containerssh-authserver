@@ -2,10 +2,11 @@ package logging
 
 import (
 	"fmt"
-	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
-	"github.com/rs/zerolog"
 	"strings"
 	"time"
+
+	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/rs/zerolog"
 )
 
 type filteredLevelWriter struct {
@@ -54,7 +55,7 @@ func NewZeroLogLogger(settings *configuration.ApplicationConfiguration) *zerolog
 
 	logger := zerolog.New(writer).With().Timestamp().Logger()
 
-	return &logger
+	return new(logger)
 }
 
 func withTimeFormat(timeFormat string) consoleWriterOption {
