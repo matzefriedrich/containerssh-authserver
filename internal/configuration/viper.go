@@ -2,8 +2,9 @@ package configuration
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 const (
@@ -20,8 +21,8 @@ func PathOption(path string) func() {
 // ConfigTypesOption sets multiple configuration types in viper.
 func ConfigTypesOption(configType ...string) func() {
 	return func() {
-		for _, configType := range configType {
-			viper.SetConfigType(configType)
+		for _, next := range configType {
+			viper.SetConfigType(next)
 		}
 	}
 }
