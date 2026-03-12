@@ -14,10 +14,10 @@ import (
 // It includes password, configuration, and public key handlers for route handling logic.
 func RouteHandlersModule(registry types.ServiceRegistry) error {
 
-	features.RegisterList[handlers.RouteHandler](context.Background(), registry)
+	_ = features.RegisterList[handlers.RouteHandler](context.Background(), registry)
 
-	registration.RegisterTransient(registry, handlers.NewConfigHookHandler)
-	registration.RegisterTransient(registry, handlers.NewPubKeyHookHandler)
+	_ = registration.RegisterTransient(registry, handlers.NewConfigHookHandler)
+	_ = registration.RegisterTransient(registry, handlers.NewPubKeyHookHandler)
 
 	return nil
 }

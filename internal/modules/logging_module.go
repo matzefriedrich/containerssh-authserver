@@ -8,7 +8,7 @@ import (
 // LoggingModule registers the required logging services.
 func LoggingModule(registry types.ServiceRegistry) error {
 
-	registry.Register(logging.NewZeroLogLogger, types.LifetimeSingleton)
+	_ = registry.Register(logging.NewZeroLogLogger, types.LifetimeSingleton)
 
 	return nil
 }

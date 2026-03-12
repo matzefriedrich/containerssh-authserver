@@ -10,8 +10,8 @@ import (
 // ApplicationServicesModule registers application services with the provided service registry.
 func ApplicationServicesModule(registry types.ServiceRegistry) error {
 
-	registration.RegisterTransient(registry, services.NewStaticUserConfigurationProfileService)
-	registration.RegisterTransient(registry, services.NewDockerAppConfigService)
+	_ = registration.RegisterTransient(registry, services.NewStaticUserConfigurationProfileService)
+	_ = registration.RegisterTransient(registry, services.NewDockerAppConfigService)
 
 	return nil
 }
