@@ -1,13 +1,14 @@
 package handlers
 
 import (
-	"github.com/rs/zerolog"
 	"strings"
+
+	"github.com/rs/zerolog"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -23,12 +24,12 @@ func (h *pubKeyHookHandler) Register(app *fiber.App) {
 }
 
 // handlePublicKeyAuthenticationRequest processes a public key authentication request and verifies the provided public key.
-func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(c *fiber.Ctx) error {
+func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(c fiber.Ctx) error {
 
 	c.Accepts("json", "text")
 
 	request := &models.PubKeyRequest{}
-	if err := c.BodyParser(request); err != nil {
+	if err := c.Bind().Body(request); err != nil {
 		return err
 	}
 

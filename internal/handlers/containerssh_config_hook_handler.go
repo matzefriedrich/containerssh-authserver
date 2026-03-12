@@ -5,7 +5,7 @@ import (
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
 	"github.com/rs/zerolog"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type configHookHandler struct {
@@ -14,7 +14,7 @@ type configHookHandler struct {
 }
 
 func (h *configHookHandler) Register(app *fiber.App) {
-	app.Post("/config", func(ctx *fiber.Ctx) error {
+	app.Post("/config", func(ctx fiber.Ctx) error {
 		return h.handleUserConfigurationRequest(ctx)
 	})
 }
@@ -22,12 +22,12 @@ func (h *configHookHandler) Register(app *fiber.App) {
 var _ RouteHandler = (*configHookHandler)(nil)
 
 // handleUserConfigurationRequest processes user configuration requests and returns Docker container configuration for the authenticated user.
-func (h *configHookHandler) handleUserConfigurationRequest(c *fiber.Ctx) error {
+func (h *configHookHandler) handleUserConfigurationRequest(c fiber.Ctx) error {
 
 	c.Accepts("json", "text")
 
 	request := &models.ConfigRequest{}
-	if err := c.BodyParser(request); err != nil {
+	if err := c.Bind().Body(request); err != nil {
 		return err
 	}
 
