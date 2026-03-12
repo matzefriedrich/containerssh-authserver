@@ -1,6 +1,6 @@
 module github.com/matzefriedrich/containerssh-authserver
 
-go 1.25.7
+go 1.26.1
 
 require (
 	github.com/docker/docker v28.5.2+incompatible
@@ -18,7 +18,6 @@ require github.com/opencontainers/image-spec v1.1.1
 
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
-	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docker/go-connections v0.6.0 // indirect
