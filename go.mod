@@ -8,7 +8,7 @@ require (
 	github.com/gofiber/fiber/v3 v3.1.0
 	github.com/matzefriedrich/parsley v1.3.2
 	github.com/opencontainers/image-spec v1.1.1
-	github.com/rs/zerolog v1.34.0
+	github.com/rs/zerolog v1.35.0
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.49.0
