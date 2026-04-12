@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Upgraded the HTTP server stack to **Fiber v3** and updated request handling to match the new API. [#42](https://github.com/matzefriedrich/containerssh-authserver/pull/42)
 * Added **graceful shutdown support** to server startup. [#42](https://github.com/matzefriedrich/containerssh-authserver/pull/42)
+* Bumps `github.com/rs/zerolog` from 1.34.0 to 1.35.0 [#43](https://github.com/matzefriedrich/containerssh-authserver/pull/43)
+
 
 ### Fixed
 
