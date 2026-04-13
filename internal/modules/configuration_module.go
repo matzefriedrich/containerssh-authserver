@@ -25,7 +25,7 @@ func ApplicationConfigurationModule(registry types.ServiceRegistry) error {
 	}
 
 	const configurationType = "yaml"
-	configuration.ConfigureApplication(
+	_ = configuration.ConfigureApplication(
 		configuration.PathOption(configurationFilesPath),
 		configuration.ConfigTypesOption(configurationType))
 
