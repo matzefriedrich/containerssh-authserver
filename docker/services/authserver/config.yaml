@@ -9,7 +9,7 @@ app:
 
       - johndoe:
           publicKeys:
-            - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINDXkAyatiBi0GT6sCoKATRlfjT1VFci83ACcsoBCrnR johndoe@localhost"
+            - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIArlhna9c5NLHKlDXkjpDNLUvw0Zj6cUTfTFELhKN7ek"
 
           image: alpine:3.21
           shellCommand: /bin/sh
