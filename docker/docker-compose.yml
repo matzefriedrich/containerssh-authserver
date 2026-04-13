@@ -34,12 +34,12 @@ services:
       - backend
 
   containerssh:
-    image: containerssh/containerssh:v0.5.2
+    image: containerssh/containerssh:v0.6
     ports:
       - "2222:2222"
 
     volumes:
-    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /var/run/docker.sock:/var/run/docker.sock
     - ./services/containerssh/config.yaml:/etc/containerssh/config.yaml:ro
     - ./keys/ssh_host_rsa_key.pem:/var/secrets/ssh_host_rsa_key
 
