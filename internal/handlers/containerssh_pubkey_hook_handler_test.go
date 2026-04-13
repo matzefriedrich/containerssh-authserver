@@ -15,6 +15,7 @@ import (
 	"github.com/matzefriedrich/parsley/pkg/features"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
 )
@@ -46,13 +47,17 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 
 	app := fiber.New()
 	request, _ := http.NewRequest(fiber.MethodPost, "/pubkey", bodyReader)
-	request.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+	request.Host = "localhost"
 	request.Header.Set(fiber.HeaderContentLength, fmt.Sprintf("%d", len(body)))
+	request.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 
 	sut.Register(app)
 
 	// Act
-	response, _ := app.Test(request)
+	response, testErr := app.Test(request)
+
+	require.NoError(t, testErr)
+
 	defer func(b io.ReadCloser) {
 		_ = b.Close()
 	}(response.Body)
