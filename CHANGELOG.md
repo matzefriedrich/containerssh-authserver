@@ -5,12 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v0.3.1] - 2026-04-22
+## [v0.3.2] - 2026-04-22
 
-* Upgrades Go version to 1.26.1 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
-* Bumps `github.com/gofiber/contrib/v3/zerolog` from v1.0.1 ti v1.0.2 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
-* Bumps `github.com/matzefriedrich/parsley`from v1.3.2 to v1.3.3 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
-* Bumps `github.com/rs/zerolog v1.35.1`from v1.35.0 to v1.35.1 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+### Changed
+
+* Upgrades Go version to 1.26.2 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+* Bumps `github.com/gofiber/contrib/v3/zerolog` from v1.0.1 to v1.0.2 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+* Bumps `github.com/matzefriedrich/parsley` from v1.3.2 to v1.3.3 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+* Bumps `github.com/rs/zerolog` from v1.35.0 to v1.35.1 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+* Bumps indirect dependencies to their latest versions. [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+
+
+## [v0.3.1] - 2026-04-13
+
+### Added
+
+* Added **`DOCKERHUB.md`** documentation for Docker image usage and configuration.
+
+### Changed
+
+* Upgraded the **ContainerSSH** image version to **v0.6** and updated volume mount permissions for the Docker socket in the sample Docker Compose configuration.
+* Bumps `golang.org/x/crypto` from 0.49.0 to 0.50.0.
+* Bumps **indirect dependencies** to their latest versions.
+
+### Fixed
+
+* Improved **public-key authentication test** by including a required `Host` header.
+* Ignores configuration loading error in `configuration_module.go`.
 
 
 ## [v0.3.0] - 2026-04-12
