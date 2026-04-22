@@ -1,14 +1,14 @@
 module github.com/matzefriedrich/containerssh-authserver
 
-go 1.26.1
+go 1.26.2
 
 require (
 	github.com/docker/docker v28.5.2+incompatible
-	github.com/gofiber/contrib/v3/zerolog v1.0.1
+	github.com/gofiber/contrib/v3/zerolog v1.0.2
 	github.com/gofiber/fiber/v3 v3.1.0
-	github.com/matzefriedrich/parsley v1.3.2
+	github.com/matzefriedrich/parsley v1.3.3
 	github.com/opencontainers/image-spec v1.1.1
-	github.com/rs/zerolog v1.35.0
+	github.com/rs/zerolog v1.35.1
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.50.0
@@ -18,12 +18,12 @@ require (
 require (
 	github.com/andybalholm/brotli v1.2.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/docker/go-connections v0.6.0 // indirect
+	github.com/docker/go-connections v0.7.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/gofiber/schema v1.7.0 // indirect
-	github.com/gofiber/utils/v2 v2.0.2 // indirect
+	github.com/gofiber/schema v1.7.1 // indirect
+	github.com/gofiber/utils/v2 v2.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.18.5 // indirect
@@ -39,7 +39,7 @@ require (
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/tinylib/msgp v1.6.3 // indirect
+	github.com/tinylib/msgp v1.6.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.70.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
