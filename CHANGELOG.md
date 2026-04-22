@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.1] - 2026-04-22
+
+* Upgrades Go version to 1.26.1 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+* Bumps `github.com/gofiber/contrib/v3/zerolog` from v1.0.1 ti v1.0.2 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+* Bumps `github.com/matzefriedrich/parsley`from v1.3.2 to v1.3.3 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+* Bumps `github.com/rs/zerolog v1.35.1`from v1.35.0 to v1.35.1 [#46](https://github.com/matzefriedrich/containerssh-authserver/pull/46)
+
+
 ## [v0.3.0] - 2026-04-12
 
 ### Changed
