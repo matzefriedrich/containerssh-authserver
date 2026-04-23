@@ -13,5 +13,10 @@ auth:
     webhook:
       url: "http://nginx-authserver-proxy:8080"
 
+  password:
+    method: webhook
+    webhook:
+      url: "http://nginx-authserver-proxy:8080"
+
 configserver:
   url: "http://nginx-authserver-proxy:8080/config"
