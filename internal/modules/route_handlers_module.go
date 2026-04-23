@@ -18,6 +18,7 @@ func RouteHandlersModule(registry types.ServiceRegistry) error {
 
 	_ = registration.RegisterTransient(registry, handlers.NewConfigHookHandler)
 	_ = registration.RegisterTransient(registry, handlers.NewPubKeyHookHandler)
+	_ = registration.RegisterTransient(registry, handlers.NewPasswordHookHandler)
 
 	return nil
 }
