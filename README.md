@@ -62,3 +62,13 @@ ssh -o IdentitiesOnly=yes -i docker/keys/johndoe.pem -p 2222 johndoe@localhost
 ```
 
 This tells SSH to use **only the explicitly specified identity file** and ignore any keys loaded in `ssh-agent`.
+
+### Generate a bcrypt password (for password authentication)
+
+Example: Run the following command to generate a bcrypt password hash for the `johndoe` user:
+
+```sh
+docker run --rm httpd:2.4 htpasswd -Bbn johndoe topsecret
+```
+
+See `docker/services/authserver/config.yaml` file; find the user configuration and update the `secret` property.

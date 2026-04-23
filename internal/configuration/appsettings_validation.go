@@ -43,7 +43,7 @@ func EnsurePublicKeyFormat() ApplicationConfigurationValidationRule {
 // EnsureUserProfilesNotEmpty validates that the AuthServer.Users section in the configuration is not nil or empty.
 func EnsureUserProfilesNotEmpty() ApplicationConfigurationValidationRule {
 	return func(config *ApplicationConfiguration) (ValidationResult, error) {
-		if config.AuthServer.Users == nil || len(config.AuthServer.Users) == 0 {
+		if len(config.AuthServer.Users) == 0 {
 			return ValidationResult{}, errors.New(ErrNoUsersConfigured)
 		}
 		return ValidationResult{}, nil

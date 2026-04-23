@@ -15,14 +15,17 @@ type userProfileServiceMock struct {
 	features.MockBase
 	GetProfileFunc      GetProfileFunc
 	VerifyPublicKeyFunc VerifyPublicKeyFunc
+	VerifySecretFunc    VerifySecretFunc
 }
 
 type GetProfileFunc func(authenticatedUser string) (configuration.UserProfile, error)
 type VerifyPublicKeyFunc func(username string, key ssh.PublicKey) (bool, error)
+type VerifySecretFunc func(username string, passwordBase64 string) (bool, error)
 
 const (
 	FunctionGetProfile      = "GetProfile"
 	FunctionVerifyPublicKey = "VerifyPublicKey"
+	FunctionVerifySecret    = "VerifySecret"
 )
 
 func (m *userProfileServiceMock) GetProfile(authenticatedUser string) (configuration.UserProfile, error) {
@@ -33,6 +36,11 @@ func (m *userProfileServiceMock) GetProfile(authenticatedUser string) (configura
 func (m *userProfileServiceMock) VerifyPublicKey(username string, key ssh.PublicKey) (bool, error) {
 	m.TraceMethodCall(FunctionVerifyPublicKey, username, key)
 	return m.VerifyPublicKeyFunc(username, key)
+}
+
+func (m *userProfileServiceMock) VerifySecret(username string, passwordBase64 string) (bool, error) {
+	m.TraceMethodCall(FunctionVerifySecret, username, passwordBase64)
+	return m.VerifySecretFunc(username, passwordBase64)
 }
 
 var _ UserProfileService = (*userProfileServiceMock)(nil)
@@ -51,9 +59,15 @@ func NewUserProfileServiceMock() *userProfileServiceMock {
 			var result1 error
 			return result0, result1
 		},
+		VerifySecretFunc: func(username string, passwordBase64 string) (bool, error) {
+			var result0 bool
+			var result1 error
+			return result0, result1
+		},
 	}
 	mock.AddFunction(FunctionGetProfile, "GetProfile(authenticatedUser string) (configuration.UserProfile, error)")
 	mock.AddFunction(FunctionVerifyPublicKey, "VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)")
+	mock.AddFunction(FunctionVerifySecret, "VerifySecret(username string, passwordBase64 string) (bool, error)")
 	return mock
 }
 

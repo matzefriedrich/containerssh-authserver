@@ -14,7 +14,7 @@ import (
 
 type pubKeyHookHandler struct {
 	profileService services.UserProfileService
-	logger         *zerolog.Logger
+	logEvents      *authHookEvents
 }
 
 var _ RouteHandler = (*pubKeyHookHandler)(nil)
@@ -39,29 +39,19 @@ func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(c fiber.Ctx) er
 	}
 
 	authorizedKeyString := string(ssh.MarshalAuthorizedKey(requestPublicKey))
-	h.logger.Info().
-		Str("authorizedKey", authorizedKeyString).
-		Msgf("Received public key")
+
+	h.logEvents.PublicKeyReceived(request.ConnectionId, authorizedKeyString)
 
 	username := strings.TrimSpace(request.Username)
 
 	publicKeyAccepted, verificationErr := h.profileService.VerifyPublicKey(username, requestPublicKey)
 	if verificationErr != nil {
-		h.logger.Error().
-			Err(verificationErr).
-			Str("connectionId", request.ConnectionId).
-			Str("username", username).
-			Msgf("Public key verification failed")
+		h.logEvents.PublicKeyAuthenticationFailed(request.ConnectionId, username, verificationErr)
 	}
 
-	if publicKeyAccepted {
-		h.logger.Info().
-			Str("connectionId", request.ConnectionId).
-			Str("username", username).
-			Msgf("Public key verification succeeded")
-	}
+	h.logEvents.PublicKeyAuthenticationCompeted(request.ConnectionId, username, publicKeyAccepted)
 
-	response := &models.PubKeyResponse{
+	response := &models.AuthResponse{
 		AuthenticatedUsername: username,
 		ClientVersion:         request.ClientVersion,
 		ConnectionId:          request.ConnectionId,
@@ -84,6 +74,8 @@ func parsePublicKey(formattedPublicKey string) (ssh.PublicKey, error) {
 func NewPubKeyHookHandler(profileService services.UserProfileService, logger *zerolog.Logger) RouteHandler {
 	return &pubKeyHookHandler{
 		profileService: profileService,
-		logger:         logger,
+		logEvents: &authHookEvents{
+			logger: logger,
+		},
 	}
 }

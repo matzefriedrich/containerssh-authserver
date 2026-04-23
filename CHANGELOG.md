@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.3] - 2026-04-23
+
+### Added
+
+* Implements `VerifySecret` method in `UserProfileService` to support SSH password authentication. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+* Introduced structured authentication event logging with the new `authHookEvents` component. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+* Added a common `AuthResponse` model and dedicated request models for public key and password authentication. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+* Added a comprehensive `Makefile` to automate building, testing, linting, and tool installation. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+
+### Changed
+
+* Bumps `github.com/gofiber/contrib/v3/zerolog` from v1.0.2 to v1.0.3. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+* Bumps `github.com/matzefriedrich/parsley` from v1.3.3 to v1.4.0. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+* Refactored authentication handlers to use centralized logging and standardized response models. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+
+### Fixed
+
+* Replaced `strings.Replace` with `strings.ReplaceAll` in logging. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+* Resolved various linter warnings, including redundant map nil checks and boolean comparisons. [#47](https://github.com/matzefriedrich/containerssh-authserver/pull/47)
+
+
 ## [v0.3.2] - 2026-04-22
 
 ### Changed

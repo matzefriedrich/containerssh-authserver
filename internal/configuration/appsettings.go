@@ -3,6 +3,7 @@ package configuration
 import (
 	"errors"
 	"fmt"
+
 	"github.com/spf13/viper"
 )
 
@@ -22,6 +23,7 @@ type UserProfile struct {
 	Networks     []string `mapstructure:"networks"`
 	PublicKeys   []string `mapstructure:"publicKeys"`
 	ShellCommand []string `mapstructure:"shellCommand"`
+	Secret       string   `mapstructure:"secret"`
 }
 
 // LoadApplicationSettings populates the provided ApplicationConfiguration instance with values from the app config section.

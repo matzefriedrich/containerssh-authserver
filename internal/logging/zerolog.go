@@ -89,5 +89,5 @@ func fiveLetterLevelFormat(level zerolog.Level) string {
 }
 
 func escapeLineBreaks(s string) string {
-	return strings.Replace(s, "\n", "\\n", -1)
+	return strings.ReplaceAll(s, "\n", "\\n")
 }

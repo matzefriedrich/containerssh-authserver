@@ -11,6 +11,8 @@ app:
           publicKeys:
             - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIArlhna9c5NLHKlDXkjpDNLUvw0Zj6cUTfTFELhKN7ek"
 
+          secret: "$2y$05$w70R4jrHOpto9cKyUaNYNezWM3ZEZWF7.H8mmJvl8GGDdhm2kpAUi"
+
           image: alpine:3.21
           shellCommand: /bin/sh
           binds:
