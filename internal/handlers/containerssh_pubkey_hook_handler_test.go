@@ -62,7 +62,7 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 		_ = b.Close()
 	}(response.Body)
 
-	responseBody := &models.PubKeyResponse{}
+	responseBody := &models.AuthResponse{}
 	decoder := json.NewDecoder(response.Body)
 	_ = decoder.Decode(responseBody)
 
