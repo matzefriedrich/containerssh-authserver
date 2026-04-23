@@ -2,11 +2,13 @@ package services
 
 import (
 	"bytes"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -28,7 +30,22 @@ func (u *staticUserConfigurationProfileService) VerifySecret(
 	username string,
 	passwordBase64 string) (bool, error) {
 
-	return false, fmt.Errorf("password invalid")
+	passwordBytes, decodeErr := base64.StdEncoding.DecodeString(passwordBase64)
+	if decodeErr != nil {
+		return false, fmt.Errorf("failed to decode password: %w", decodeErr)
+	}
+
+	profile, profileErr := u.GetProfile(username)
+	if profileErr != nil {
+		return false, fmt.Errorf("failed to get user profile: %w", profileErr)
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(profile.Secret), passwordBytes)
+	if err != nil {
+		return false, fmt.Errorf("password invalid")
+	}
+
+	return true, nil
 }
 
 // VerifyPublicKey compares the given public key with stored keys for the specified user and returns true if a match is found.
