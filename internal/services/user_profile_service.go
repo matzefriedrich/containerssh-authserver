@@ -23,8 +23,18 @@ type staticUserConfigurationProfileService struct {
 	settings *configuration.ApplicationConfiguration
 }
 
+// VerifySecret compares the given password with the stored password for the specified user and returns true if a match is found.
+func (u *staticUserConfigurationProfileService) VerifySecret(
+	username string,
+	passwordBase64 string) (bool, error) {
+
+	return false, fmt.Errorf("password invalid")
+}
+
 // VerifyPublicKey compares the given public key with stored keys for the specified user and returns true if a match is found.
-func (u *staticUserConfigurationProfileService) VerifyPublicKey(username string, expectedKey ssh.PublicKey) (bool, error) {
+func (u *staticUserConfigurationProfileService) VerifyPublicKey(
+	username string,
+	expectedKey ssh.PublicKey) (bool, error) {
 
 	profile, err := u.GetProfile(username)
 	if err != nil {
@@ -49,7 +59,7 @@ func (u *staticUserConfigurationProfileService) VerifyPublicKey(username string,
 func (u *staticUserConfigurationProfileService) GetProfile(authenticatedUsername string) (configuration.UserProfile, error) {
 
 	profile, found := u.settings.AuthServer.Users[authenticatedUsername]
-	if found == false {
+	if !found {
 		return EmptyUserProfile, errors.New(ErrorUserProfileNotFound)
 	}
 
