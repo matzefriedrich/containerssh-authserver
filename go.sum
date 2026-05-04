@@ -16,8 +16,8 @@ github.com/fxamacker/cbor/v2 v2.9.1 h1:2rWm8B193Ll4VdjsJY28jxs70IdDsHRWgQYAI80+r
 github.com/fxamacker/cbor/v2 v2.9.1/go.mod h1:vM4b+DJCtHn+zz7h3FFp/hDAI9WNWCsZj23V5ytsSxQ=
 github.com/go-viper/mapstructure/v2 v2.5.0 h1:vM5IJoUAy3d7zRSVtIwQgBj7BiWtMPfmPEgAXnvj1Ro=
 github.com/go-viper/mapstructure/v2 v2.5.0/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
-github.com/gofiber/contrib/v3/zerolog v1.0.3 h1:hoaqxQM9WvGs66Ur/hgG6A5lIScZ6JypCtbnZdp+XbA=
-github.com/gofiber/contrib/v3/zerolog v1.0.3/go.mod h1:XYH+v9d8bS5n2cYryggj5XF+HFIfaYz617j5oSGgt2Y=
+github.com/gofiber/contrib/v3/zerolog v1.0.4 h1:oXVqn9gChxnDYDU9VQSJHggRSP8vLVI0MMdJt7saTf8=
+github.com/gofiber/contrib/v3/zerolog v1.0.4/go.mod h1:7TWyNqBe4drslUqZsr7o3u+PqcYMg2waSgFCPhxtqGA=
 github.com/gofiber/fiber/v3 v3.2.0 h1:g9+09D320foINPpCnR3ibQ5oBEFHjAWRRfDG1te54u8=
 github.com/gofiber/fiber/v3 v3.2.0/go.mod h1:FHOsc2Db7HhHpsE62QAaJlXVV1pNkbZEptZ4jtti7m4=
 github.com/gofiber/schema v1.7.1 h1:oSJBKdgP8JeIME4TQSAqlNKTU2iBB+2RNmKi8Nsc+TI=
