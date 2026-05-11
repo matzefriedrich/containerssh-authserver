@@ -4,7 +4,7 @@ go 1.26.2
 
 require (
 	github.com/docker/docker v28.5.2+incompatible
-	github.com/gofiber/contrib/v3/zerolog v1.0.4
+	github.com/gofiber/contrib/v3/zerolog v1.0.5
 	github.com/gofiber/fiber/v3 v3.2.0
 	github.com/matzefriedrich/parsley v1.4.0
 	github.com/opencontainers/image-spec v1.1.1
@@ -26,7 +26,7 @@ require (
 	github.com/gofiber/utils/v2 v2.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/klauspost/compress v1.18.5 // indirect
+	github.com/klauspost/compress v1.18.6 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
@@ -41,7 +41,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tinylib/msgp v1.6.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.70.0 // indirect
+	github.com/valyala/fasthttp v1.71.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/net v0.53.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
