@@ -4,14 +4,14 @@ go 1.26.2
 
 require (
 	github.com/docker/docker v28.5.2+incompatible
-	github.com/gofiber/contrib/v3/zerolog v1.0.4
+	github.com/gofiber/contrib/v3/zerolog v1.1.0
 	github.com/gofiber/fiber/v3 v3.3.0
 	github.com/matzefriedrich/parsley v1.4.0
 	github.com/opencontainers/image-spec v1.1.1
 	github.com/rs/zerolog v1.35.1
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/crypto v0.51.0
+	golang.org/x/crypto v0.52.0
 	gotest.tools/v3 v3.5.2
 )
 
@@ -22,12 +22,12 @@ require (
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/gofiber/schema v1.7.1 // indirect
-	github.com/gofiber/utils/v2 v2.0.6 // indirect
+	github.com/gofiber/schema v1.7.2 // indirect
+	github.com/gofiber/utils/v2 v2.1.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.18.6 // indirect
-	github.com/mattn/go-colorable v0.1.14 // indirect
+	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
@@ -43,8 +43,8 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.71.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/net v0.54.0 // indirect
-	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
