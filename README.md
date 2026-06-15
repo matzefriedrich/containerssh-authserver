@@ -13,9 +13,21 @@
 
 ## Prerequisites
 
-* Go 1.26 or newer (for building from source)
+* Go 1.26.3 or newer (for building from source)
 * Docker 20.10+ (or compatible), with Docker Compose (for the demo), Docker API version 1.41 
 * openssl, ssh-keygen
+
+## Installation & Building
+
+To build the application from source, use the provided `Makefile`:
+
+```sh
+# Install tools, generate code, lint and build
+make all
+
+# Or just build the binary
+make build
+```
 
 ## Quick start
 
@@ -72,3 +84,7 @@ docker run --rm httpd:2.4 htpasswd -Bbn johndoe topsecret
 ```
 
 See `docker/services/authserver/config.yaml` file; find the user configuration and update the `secret` property.
+
+--- 
+
+Copyright 2025 - 2026 by Matthias Friedrich
