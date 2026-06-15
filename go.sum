@@ -38,8 +38,8 @@ github.com/mattn/go-colorable v0.1.15 h1:+u9SLTRGnXv73cEsnsmoZBom+dMU88B2M0aDcWy
 github.com/mattn/go-colorable v0.1.15/go.mod h1:6LmQG8QLFO4G5z1gPvYEzlUgJ2wF+stgPZH1UqBm1s8=
 github.com/mattn/go-isatty v0.0.22 h1:j8l17JJ9i6VGPUFUYoTUKPSgKe/83EYU2zBC7YNKMw4=
 github.com/mattn/go-isatty v0.0.22/go.mod h1:ZXfXG4SQHsB/w3ZeOYbR0PrPwLy+n6xiMrJlRFqopa4=
-github.com/matzefriedrich/parsley v1.4.0 h1:WA3UCl56g0iR2JXandQT0K/agNL4L17cSF90cqSWd1I=
-github.com/matzefriedrich/parsley v1.4.0/go.mod h1:ydBkSjXjJ6Ya+DfSasOZYlEO1vHKX+aiSJu+hS/cd1w=
+github.com/matzefriedrich/parsley v1.5.0 h1:iBTIFuGcOM4YQcxiwBFnU4HEzuV45LSmgw6tMq3w9KY=
+github.com/matzefriedrich/parsley v1.5.0/go.mod h1:DBD0Vsu8yqaDBGqfZVf+10WhFI1/70TZ6URx0CkwTA0=
 github.com/moby/docker-image-spec v1.3.1 h1:jMKff3w6PgbfSa69GfNg+zN/XLhfXJGnEx3Nl2EsFP0=
 github.com/moby/docker-image-spec v1.3.1/go.mod h1:eKmb5VW8vQEh/BAr2yvVNvuiJuY6UIocYsFu/DxxRpo=
 github.com/opencontainers/go-digest v1.0.0 h1:apOUWs51W5PlhuyGyz9FCeeBIOUDA/6nW8Oi/yOhh5U=
