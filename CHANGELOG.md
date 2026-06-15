@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bumps `github.com/gofiber/contrib/v3/zerolog` from 1.0.3 to 1.0.4 [#49](https://github.com/matzefriedrich/containerssh-authserver/pull/49)
 * Bumps `github.com/gofiber/fiber/v3` from 3.2.0 to 3.3.0 [#54](https://github.com/matzefriedrich/containerssh-authserver/pull/54)
 * Bumps `github.com/gofiber/contrib/v3/zerolog` from 1.0.4 to 1.1.0 [#56](https://github.com/matzefriedrich/containerssh-authserver/pull/56)
+* Bumps `github.com/matzefriedrich/parsley` from 1.4.0 to 1.5.0 [#57](https://github.com/matzefriedrich/containerssh-authserver/pull/57)
 
 
 ## [v0.3.3] - 2026-04-23
