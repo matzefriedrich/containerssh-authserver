@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v0.3.4] - 2026-06-15
+
 ### Changed
 
 * Bumped `github.com/gofiber/fiber/v3` from 3.1.0 to 3.3.0 [#48](https://github.com/matzefriedrich/containerssh-authserver/pull/48), [#54](https://github.com/matzefriedrich/containerssh-authserver/pull/54)
