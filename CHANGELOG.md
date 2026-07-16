@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+* Bumped `github.com/gofiber/contrib/v3/zerolog` from 1.1.0 to 1.1.1 [#59](https://github.com/matzefriedrich/containerssh-authserver/pull/59)
+
+
 ## [v0.3.4] - 2026-06-15
 
 ### Changed
