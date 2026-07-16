@@ -43,5 +43,6 @@ func (e *authHookEvents) PasswordAuthenticationFailed(connectionId string, usern
 
 func (e *authHookEvents) PublicKeyReceived(connectionId string, authorizedKeyString string) {
 	e.logger.Info("Received public key",
+		slog.String("connectionId", connectionId),
 		slog.String("authorizedKey", authorizedKeyString))
 }
