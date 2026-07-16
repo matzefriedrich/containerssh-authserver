@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"log/slog"
 	"strings"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
-	"github.com/rs/zerolog"
 )
 
 type passwordHookHandler struct {
@@ -50,7 +50,7 @@ func (h *passwordHookHandler) handlePasswordAuthenticationRequest(c fiber.Ctx) e
 	return c.JSON(response)
 }
 
-func NewPasswordHookHandler(profileService services.UserProfileService, logger *zerolog.Logger) RouteHandler {
+func NewPasswordHookHandler(profileService services.UserProfileService, logger *slog.Logger) RouteHandler {
 	return &passwordHookHandler{
 		profileService: profileService,
 		logEvents: &authHookEvents{

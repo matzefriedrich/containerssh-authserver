@@ -1,16 +1,17 @@
 package handlers
 
 import (
+	"log/slog"
+
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
-	"github.com/rs/zerolog"
 
 	"github.com/gofiber/fiber/v3"
 )
 
 type configHookHandler struct {
 	containerAppConfigService services.ContainerAppConfigService
-	logger                    *zerolog.Logger
+	logger                    *slog.Logger
 }
 
 func (h *configHookHandler) Register(app *fiber.App) {
@@ -34,7 +35,9 @@ func (h *configHookHandler) handleUserConfigurationRequest(c fiber.Ctx) error {
 	authenticatedUsername := request.AuthenticatedUsername
 	cfg, err := h.containerAppConfigService.CreateApplicationConfigFor(authenticatedUsername)
 	if err != nil {
-		h.logger.Error().Msgf("Cannot create application config for user %s: %v", authenticatedUsername, err)
+		h.logger.Error("Cannot create application config",
+			slog.String("username", authenticatedUsername),
+			slog.Any("error", err))
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -50,7 +53,7 @@ func (h *configHookHandler) handleUserConfigurationRequest(c fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func NewConfigHookHandler(containerAppConfigService services.ContainerAppConfigService, logger *zerolog.Logger) RouteHandler {
+func NewConfigHookHandler(containerAppConfigService services.ContainerAppConfigService, logger *slog.Logger) RouteHandler {
 	return &configHookHandler{
 		containerAppConfigService: containerAppConfigService,
 		logger:                    logger,

@@ -2,29 +2,30 @@ package services
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/matzefriedrich/containerssh-authserver/internal/shims"
-	"github.com/rs/zerolog"
 )
 
 type dockerAppConfigService struct {
 	profileService UserProfileService
-	logger         *zerolog.Logger
+	logger         *slog.Logger
 }
 
 // CreateApplicationConfigFor creates and returns an application configuration for the specified authenticated username.
 // It retrieves the user profile, constructs a Docker container configuration, and handles necessary setup based on user profile information.
 func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsername string) (shims.AppConfigShim, error) {
 
-	d.logger.Info().Msgf("Created application config for user %s", authenticatedUsername)
+	d.logger.Info("Created application config",
+		slog.String("username", authenticatedUsername))
 
 	profile, profileErr := d.profileService.GetProfile(authenticatedUsername)
 	if profileErr != nil {
-		d.logger.Error().Err(profileErr).
-			Str("authenticationUser", authenticatedUsername).
-			Msgf("Cannot load user profile: %s", profileErr)
+		d.logger.Error("Cannot load user profile",
+			slog.Any("error", profileErr),
+			slog.String("authenticationUser", authenticatedUsername))
 		return InvalidAppConfig, fmt.Errorf("cannot load user profile: %s", profileErr)
 	}
 
@@ -66,7 +67,7 @@ func (d *dockerAppConfigService) CreateApplicationConfigFor(authenticatedUsernam
 
 var _ ContainerAppConfigService = (*dockerAppConfigService)(nil)
 
-func NewDockerAppConfigService(profileService UserProfileService, logger *zerolog.Logger) ContainerAppConfigService {
+func NewDockerAppConfigService(profileService UserProfileService, logger *slog.Logger) ContainerAppConfigService {
 	return &dockerAppConfigService{
 		profileService: profileService,
 		logger:         logger,

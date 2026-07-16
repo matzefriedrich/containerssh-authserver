@@ -5,11 +5,11 @@ import (
 	"context"
 	"fmt"
 	"io/fs"
+	"log/slog"
+	"time"
 
-	fiberzerolog "github.com/gofiber/contrib/v3/zerolog"
 	"github.com/gofiber/fiber/v3"
 	"github.com/matzefriedrich/containerssh-authserver/internal/resources"
-	"github.com/rs/zerolog"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers"
@@ -20,7 +20,7 @@ import (
 type authServerApplication struct {
 	app             *fiber.App
 	config          *configuration.ApplicationConfiguration
-	logger          *zerolog.Logger
+	logger          *slog.Logger
 	applicationInfo *configuration.ApplicationInfo
 }
 
@@ -38,12 +38,12 @@ func (a *authServerApplication) Run(ctx context.Context) error {
 }
 
 func (a *authServerApplication) printApplicationInfo() {
-	a.logger.Info().Msgf("Starting %s", a.applicationInfo.ReleaseName)
-	a.logger.Info().Msgf("Version: %s", a.applicationInfo.VersionString())
-	a.logger.Info().Msgf("Port: %d", a.config.Port)
-
-	a.logger.Info().Msgf("Configuration path: %s", a.applicationInfo.ConfigurationPath)
-	a.logger.Info().Msgf("Configuration type: %s", a.applicationInfo.ConfigurationType)
+	a.logger.Info("Starting application", slog.String("releaseName", a.applicationInfo.ReleaseName))
+	a.logger.Info("Version info", slog.String("version", a.applicationInfo.VersionString()))
+	a.logger.Info("Network info", slog.Int("port", a.config.Port))
+	a.logger.Info("Configuration info",
+		slog.String("path", a.applicationInfo.ConfigurationPath),
+		slog.String("type", a.applicationInfo.ConfigurationType))
 }
 
 func (a *authServerApplication) printBanner() {
@@ -56,7 +56,7 @@ func (a *authServerApplication) printBanner() {
 	scanner := bufio.NewScanner(bannerFile)
 	for scanner.Scan() {
 		line := scanner.Text()
-		a.logger.Info().Msg(line)
+		a.logger.Info(line)
 	}
 }
 
@@ -68,11 +68,21 @@ func NewFiberApp(
 	routeHandlers []handlers.RouteHandler,
 	config *configuration.ApplicationConfiguration,
 	applicationInfo *configuration.ApplicationInfo,
-	logger *zerolog.Logger) bootstrap.Application {
+	logger *slog.Logger) bootstrap.Application {
 
-	app.Use(fiberzerolog.New(fiberzerolog.Config{
-		Logger: logger,
-	}))
+	app.Use(func(c fiber.Ctx) error {
+		start := time.Now()
+		err := c.Next()
+		latency := time.Since(start)
+
+		logger.Info("request",
+			slog.String("method", c.Method()),
+			slog.String("path", c.Path()),
+			slog.Int("status", c.Response().StatusCode()),
+			slog.Duration("latency", latency),
+		)
+		return err
+	})
 
 	// Register RouteHandler services with the resolved Fiber instance.
 	for _, routeHandler := range routeHandlers {
