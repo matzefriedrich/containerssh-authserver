@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Bumped `github.com/gofiber/contrib/v3/zerolog` from 1.1.0 to 1.1.1 [#59](https://github.com/matzefriedrich/containerssh-authserver/pull/59)
 * Bumped `golang.org/x/crypto` from 0.53.0 to 0.54.0 [#61](https://github.com/matzefriedrich/containerssh-authserver/pull/61)
+* Bumped `github.com/gofiber/schema` from 1.8.0 to 1.8.2
+* Bumped `github.com/gofiber/utils/v2` from 2.1.1 to 2.2.0
+* Bumped `github.com/mattn/go-isatty` from 0.0.22 to 0.0.23
+* Bumped `github.com/pelletier/go-toml/v2` from 2.3.1 to 2.4.3
+* Bumped `github.com/shamaton/msgpack/v3` from 3.1.2 to 3.2.0
+* Bumped `golang.org/x/net` from 0.56.0 to 0.57.0
 
 
 ## [v0.3.4] - 2026-06-15
