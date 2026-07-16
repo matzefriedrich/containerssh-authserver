@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [v0.3.5] - 2026-07-16
 
 * Bumped `golang.org/x/crypto` from 0.53.0 to 0.54.0 [#61](https://github.com/matzefriedrich/containerssh-authserver/pull/61)
 * Bumped `github.com/gofiber/schema` from 1.8.0 to 1.8.2
