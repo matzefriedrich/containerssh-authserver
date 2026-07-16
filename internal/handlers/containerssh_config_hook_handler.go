@@ -2,34 +2,32 @@ package handlers
 
 import (
 	"log/slog"
+	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
-
-	"github.com/gofiber/fiber/v3"
 )
 
 type configHookHandler struct {
 	containerAppConfigService services.ContainerAppConfigService
+	jsonCodec                 JSONCodec
 	logger                    *slog.Logger
 }
 
-func (h *configHookHandler) Register(app *fiber.App) {
-	app.Post("/config", func(ctx fiber.Ctx) error {
-		return h.handleUserConfigurationRequest(ctx)
-	})
+func (h *configHookHandler) Register(router chi.Router) {
+	router.Post("/config", h.handleUserConfigurationRequest)
 }
 
 var _ RouteHandler = (*configHookHandler)(nil)
 
 // handleUserConfigurationRequest processes user configuration requests and returns Docker container configuration for the authenticated user.
-func (h *configHookHandler) handleUserConfigurationRequest(c fiber.Ctx) error {
-
-	c.Accepts("json", "text")
+func (h *configHookHandler) handleUserConfigurationRequest(w http.ResponseWriter, r *http.Request) {
 
 	request := &models.ConfigRequest{}
-	if err := c.Bind().Body(request); err != nil {
-		return err
+	if err := h.jsonCodec.Decode(r.Body, request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	authenticatedUsername := request.AuthenticatedUsername
@@ -38,7 +36,8 @@ func (h *configHookHandler) handleUserConfigurationRequest(c fiber.Ctx) error {
 		h.logger.Error("Cannot create application config",
 			slog.String("username", authenticatedUsername),
 			slog.Any("error", err))
-		return c.SendStatus(fiber.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	response := &models.ConfigDockerResponse{
@@ -50,12 +49,14 @@ func (h *configHookHandler) handleUserConfigurationRequest(c fiber.Ctx) error {
 		Config:                cfg,
 	}
 
-	return c.JSON(response)
+	w.Header().Set("Content-Type", "application/json")
+	_ = h.jsonCodec.Encode(w, response)
 }
 
-func NewConfigHookHandler(containerAppConfigService services.ContainerAppConfigService, logger *slog.Logger) RouteHandler {
+func NewConfigHookHandler(containerAppConfigService services.ContainerAppConfigService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
 	return &configHookHandler{
 		containerAppConfigService: containerAppConfigService,
+		jsonCodec:                 jsonCodec,
 		logger:                    logger,
 	}
 }

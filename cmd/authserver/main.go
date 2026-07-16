@@ -15,11 +15,11 @@ func main() {
 
 	ctx := context.Background()
 
-	err := bootstrap.RunParsleyApplication(ctx, internal.NewFiberApp, func(registry types.ServiceRegistry) error {
+	err := bootstrap.RunParsleyApplication(ctx, internal.NewChiApp, func(registry types.ServiceRegistry) error {
 
 		_ = registry.RegisterModule(modules.ApplicationConfigurationModule)
 		_ = registry.RegisterModule(modules.LoggingModule)
-		_ = registry.RegisterModule(modules.FiberModule)
+		_ = registry.RegisterModule(modules.ChiModule)
 		_ = registry.RegisterModule(modules.RouteHandlersModule)
 		_ = registry.RegisterModule(modules.ApplicationServicesModule)
 

@@ -1,8 +1,8 @@
 package handlers
 
-import "github.com/gofiber/fiber/v3"
+import "github.com/go-chi/chi/v5"
 
-// RouteHandler defines an interface for registering routes with a Fiber application.
+// RouteHandler defines an interface for registering routes with a chi router.
 type RouteHandler interface {
-	Register(app *fiber.App)
+	Register(router chi.Router)
 }

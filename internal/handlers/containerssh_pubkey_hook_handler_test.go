@@ -3,19 +3,18 @@ package handlers
 import (
 	"crypto/rand"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/go-chi/chi/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
 	"github.com/matzefriedrich/parsley/pkg/features"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
 )
@@ -37,7 +36,8 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 
 	handler := slog.NewTextHandler(io.Discard, nil)
 	logger := slog.New(handler)
-	sut := NewPubKeyHookHandler(userProfileServiceMock, logger)
+	jsonCodec := NewJSONCodec()
+	sut := NewPubKeyHookHandler(userProfileServiceMock, jsonCodec, logger)
 
 	requestBody := &models.PubKeyRequest{
 		PublicKey: authorizedKey,
@@ -47,18 +47,16 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 	body, _ := json.Marshal(requestBody)
 	bodyReader := strings.NewReader(string(body))
 
-	app := fiber.New()
-	request, _ := http.NewRequest(fiber.MethodPost, "/pubkey", bodyReader)
-	request.Host = "localhost"
-	request.Header.Set(fiber.HeaderContentLength, fmt.Sprintf("%d", len(body)))
-	request.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+	router := chi.NewRouter()
+	sut.Register(router)
 
-	sut.Register(app)
+	request, _ := http.NewRequest(http.MethodPost, "/pubkey", bodyReader)
+	request.Header.Set("Content-Type", "application/json")
 
 	// Act
-	response, testErr := app.Test(request)
-
-	require.NoError(t, testErr)
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, request)
+	response := recorder.Result()
 
 	defer func(b io.ReadCloser) {
 		_ = b.Close()
