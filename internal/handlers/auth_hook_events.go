@@ -1,9 +1,9 @@
 package handlers
 
-import "github.com/rs/zerolog"
+import "log/slog"
 
 type authHookEvents struct {
-	logger *zerolog.Logger
+	logger *slog.Logger
 }
 
 func (e *authHookEvents) PublicKeyAuthenticationCompeted(
@@ -13,42 +13,35 @@ func (e *authHookEvents) PublicKeyAuthenticationCompeted(
 	if !publicKeyAccepted {
 		return
 	}
-	e.logger.Info().
-		Str("connectionId", connectionId).
-		Str("username", username).
-		Msgf("Public key verification succeeded")
+	e.logger.Info("Public key verification succeeded",
+		slog.String("connectionId", connectionId),
+		slog.String("username", username))
 }
 
 func (e *authHookEvents) PasswordAuthenticationCompeted(connectionId string, username string, passwordAccepted bool) {
 	if !passwordAccepted {
 		return
 	}
-	e.logger.Info().
-		Str("connectionId", connectionId).
-		Str("username", username).
-		Msgf("Password verification succeeded")
+	e.logger.Info("Password verification succeeded",
+		slog.String("connectionId", connectionId),
+		slog.String("username", username))
 }
 
 func (e *authHookEvents) PublicKeyAuthenticationFailed(connectionId string, username string, verificationErr error) {
-	e.logger.Error().
-		Err(verificationErr).
-		Str("connectionId", connectionId).
-		Str("username", username).
-		Msgf("Public key verification failed")
+	e.logger.Error("Public key verification failed",
+		"error", verificationErr,
+		slog.String("connectionId", connectionId),
+		slog.String("username", username))
 }
 
 func (e *authHookEvents) PasswordAuthenticationFailed(connectionId string, username string, verificationErr error) {
-	e.logger.Error().
-		Err(verificationErr).
-		Str("connectionId", connectionId).
-		Str("username", username).
-		Msgf("Password verification failed")
-
+	e.logger.Error("Password verification failed",
+		"error", verificationErr,
+		slog.String("connectionId", connectionId),
+		slog.String("username", username))
 }
 
 func (e *authHookEvents) PublicKeyReceived(connectionId string, authorizedKeyString string) {
-	e.logger.Info().
-		Str("authorizedKey", authorizedKeyString).
-		Msgf("Received public key")
-
+	e.logger.Info("Received public key",
+		slog.String("authorizedKey", authorizedKeyString))
 }

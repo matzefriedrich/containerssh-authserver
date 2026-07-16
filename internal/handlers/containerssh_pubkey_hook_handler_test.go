@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"strings"
 	"testing"
@@ -13,7 +14,6 @@ import (
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
 	"github.com/matzefriedrich/parsley/pkg/features"
-	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/ed25519"
@@ -35,7 +35,9 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 			strings.Compare(username, authenticatedUsername) == 0, nil
 	}
 
-	sut := NewPubKeyHookHandler(userProfileServiceMock, &zerolog.Logger{})
+	handler := slog.NewTextHandler(io.Discard, nil)
+	logger := slog.New(handler)
+	sut := NewPubKeyHookHandler(userProfileServiceMock, logger)
 
 	requestBody := &models.PubKeyRequest{
 		PublicKey: authorizedKey,

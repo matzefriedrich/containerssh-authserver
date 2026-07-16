@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-* Bumped `github.com/gofiber/contrib/v3/zerolog` from 1.1.0 to 1.1.1 [#59](https://github.com/matzefriedrich/containerssh-authserver/pull/59)
+* Replaced `zerolog` with the standard library's `slog`.
 * Bumped `golang.org/x/crypto` from 0.53.0 to 0.54.0 [#61](https://github.com/matzefriedrich/containerssh-authserver/pull/61)
 * Bumped `github.com/gofiber/schema` from 1.8.0 to 1.8.2
 * Bumped `github.com/gofiber/utils/v2` from 2.1.1 to 2.2.0

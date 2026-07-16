@@ -1,9 +1,8 @@
 package handlers
 
 import (
+	"log/slog"
 	"strings"
-
-	"github.com/rs/zerolog"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
@@ -71,7 +70,7 @@ func parsePublicKey(formattedPublicKey string) (ssh.PublicKey, error) {
 	return publicKey, nil
 }
 
-func NewPubKeyHookHandler(profileService services.UserProfileService, logger *zerolog.Logger) RouteHandler {
+func NewPubKeyHookHandler(profileService services.UserProfileService, logger *slog.Logger) RouteHandler {
 	return &pubKeyHookHandler{
 		profileService: profileService,
 		logEvents: &authHookEvents{
