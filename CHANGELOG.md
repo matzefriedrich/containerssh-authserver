@@ -5,8 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.4.0] - 2026-07-17
+
+### Changed
+
+* Replaced `gofiber/fiber/v3` with `go-chi/chi/v5` to reduce vulnerability footprint.
+* Abstracted JSON encoding and decoding into a `JSONCodec` dependency for handlers.
+* Renamed mocked function identifiers for consistency across services and tests.
+
 ## [v0.3.5] - 2026-07-16
 
+### Changed
+
+* Replaced `zerolog` with the standard library's `slog` [#62](https://github.com/matzefriedrich/containerssh-authserver/pull/62/changes)
 * Bumped `golang.org/x/crypto` from 0.53.0 to 0.54.0 [#61](https://github.com/matzefriedrich/containerssh-authserver/pull/61)
 * Bumped `github.com/gofiber/schema` from 1.8.0 to 1.8.2
 * Bumped `github.com/gofiber/utils/v2` from 2.1.1 to 2.2.0
@@ -14,9 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bumped `github.com/pelletier/go-toml/v2` from 2.3.1 to 2.4.3
 * Bumped `github.com/shamaton/msgpack/v3` from 3.1.2 to 3.2.0
 * Bumped `golang.org/x/net` from 0.56.0 to 0.57.0
-* Replaced `zerolog` with the standard library's `slog` [#62](https://github.com/matzefriedrich/containerssh-authserver/pull/62/changes)
-* Replaced `gofiber/fiber/v3` with `go-chi/chi/v5` to reduce vulnerability footprint.
-* Abstracted JSON encoding and decoding into a `JSONCodec` dependency for handlers.
+* Bumped Parsley CLI to v1.5.0 in the `Makefile`.
 
 
 ## [v0.3.4] - 2026-06-15
