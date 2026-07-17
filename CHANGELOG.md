@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Bumped `github.com/shamaton/msgpack/v3` from 3.1.2 to 3.2.0
 * Bumped `golang.org/x/net` from 0.56.0 to 0.57.0
 * Replaced `zerolog` with the standard library's `slog` [#62](https://github.com/matzefriedrich/containerssh-authserver/pull/62/changes)
+* Replaced `gofiber/fiber/v3` with `go-chi/chi/v5` to reduce vulnerability footprint.
+* Abstracted JSON encoding and decoding into a `JSONCodec` dependency for handlers.
 
 
 ## [v0.3.4] - 2026-06-15

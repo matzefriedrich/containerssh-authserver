@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
+	"net/http"
 	"time"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/matzefriedrich/containerssh-authserver/internal/resources"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
@@ -18,7 +20,7 @@ import (
 )
 
 type authServerApplication struct {
-	app             *fiber.App
+	router          *chi.Mux
 	config          *configuration.ApplicationConfiguration
 	logger          *slog.Logger
 	applicationInfo *configuration.ApplicationInfo
@@ -31,10 +33,23 @@ func (a *authServerApplication) Run(ctx context.Context) error {
 	a.printBanner()
 
 	listenAddress := fmt.Sprintf(":%d", a.config.Port)
-	return a.app.Listen(listenAddress, fiber.ListenConfig{
-		GracefulContext:       ctx,
-		DisableStartupMessage: true,
-	})
+	server := &http.Server{
+		Addr:    listenAddress,
+		Handler: a.router,
+	}
+
+	go func() {
+		<-ctx.Done()
+		shutdownCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+		defer cancel()
+		_ = server.Shutdown(shutdownCtx)
+	}()
+
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		return err
+	}
+
+	return nil
 }
 
 func (a *authServerApplication) printApplicationInfo() {
@@ -62,35 +77,43 @@ func (a *authServerApplication) printBanner() {
 
 var _ bootstrap.Application = (*authServerApplication)(nil)
 
-// NewFiberApp initializes and configures a Fiber application with the provided route handlers, configuration, and logger.
-func NewFiberApp(
-	app *fiber.App,
+// NewChiApp initializes and configures a chi application with the provided route handlers, configuration, and logger.
+func NewChiApp(
+	router *chi.Mux,
 	routeHandlers []handlers.RouteHandler,
 	config *configuration.ApplicationConfiguration,
 	applicationInfo *configuration.ApplicationInfo,
 	logger *slog.Logger) bootstrap.Application {
 
-	app.Use(func(c fiber.Ctx) error {
-		start := time.Now()
-		err := c.Next()
-		latency := time.Since(start)
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Recoverer)
 
-		logger.Info("request",
-			slog.String("method", c.Method()),
-			slog.String("path", c.Path()),
-			slog.Int("status", c.Response().StatusCode()),
-			slog.Duration("latency", latency),
-		)
-		return err
+	router.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			start := time.Now()
+
+			ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
+
+			next.ServeHTTP(ww, r)
+
+			latency := time.Since(start)
+
+			logger.Info("request",
+				slog.String("method", r.Method),
+				slog.String("path", r.URL.Path),
+				slog.Int("status", ww.Status()),
+				slog.Duration("latency", latency),
+			)
+		})
 	})
 
-	// Register RouteHandler services with the resolved Fiber instance.
+	// Register RouteHandler services with the resolved chi instance.
 	for _, routeHandler := range routeHandlers {
-		routeHandler.Register(app)
+		routeHandler.Register(router)
 	}
 
 	return &authServerApplication{
-		app:             app,
+		router:          router,
 		config:          config,
 		applicationInfo: applicationInfo,
 		logger:          logger,

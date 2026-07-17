@@ -2,31 +2,32 @@ package handlers
 
 import (
 	"log/slog"
+	"net/http"
 	"strings"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/go-chi/chi/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
 	"github.com/matzefriedrich/containerssh-authserver/internal/services"
 )
 
 type passwordHookHandler struct {
 	profileService services.UserProfileService
+	jsonCodec      JSONCodec
 	logEvents      *authHookEvents
 }
 
 var _ RouteHandler = (*passwordHookHandler)(nil)
 
-func (h *passwordHookHandler) Register(app *fiber.App) {
-	app.Post("/password", h.handlePasswordAuthenticationRequest)
+func (h *passwordHookHandler) Register(router chi.Router) {
+	router.Post("/password", h.handlePasswordAuthenticationRequest)
 }
 
-func (h *passwordHookHandler) handlePasswordAuthenticationRequest(c fiber.Ctx) error {
-
-	c.Accepts("json", "text")
+func (h *passwordHookHandler) handlePasswordAuthenticationRequest(w http.ResponseWriter, r *http.Request) {
 
 	request := &models.PasswordRequest{}
-	if err := c.Bind().Body(request); err != nil {
-		return err
+	if err := h.jsonCodec.Decode(r.Body, request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	username := strings.TrimSpace(request.Username)
@@ -47,12 +48,14 @@ func (h *passwordHookHandler) handlePasswordAuthenticationRequest(c fiber.Ctx) e
 		Username:              username,
 	}
 
-	return c.JSON(response)
+	w.Header().Set("Content-Type", "application/json")
+	_ = h.jsonCodec.Encode(w, response)
 }
 
-func NewPasswordHookHandler(profileService services.UserProfileService, logger *slog.Logger) RouteHandler {
+func NewPasswordHookHandler(profileService services.UserProfileService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
 	return &passwordHookHandler{
 		profileService: profileService,
+		jsonCodec:      jsonCodec,
 		logEvents: &authHookEvents{
 			logger: logger,
 		},
