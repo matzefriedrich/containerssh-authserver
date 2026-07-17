@@ -13,33 +13,33 @@ import (
 
 type userProfileServiceMock struct {
 	features.MockBase
-	GetProfileFunc      GetProfileFunc
-	VerifyPublicKeyFunc VerifyPublicKeyFunc
-	VerifySecretFunc    VerifySecretFunc
+	GetProfileFunc      UserProfileService_GetProfileFunc
+	VerifyPublicKeyFunc UserProfileService_VerifyPublicKeyFunc
+	VerifySecretFunc    UserProfileService_VerifySecretFunc
 }
 
-type GetProfileFunc func(authenticatedUser string) (configuration.UserProfile, error)
-type VerifyPublicKeyFunc func(username string, key ssh.PublicKey) (bool, error)
-type VerifySecretFunc func(username string, passwordBase64 string) (bool, error)
+type UserProfileService_GetProfileFunc func(authenticatedUser string) (configuration.UserProfile, error)
+type UserProfileService_VerifyPublicKeyFunc func(username string, key ssh.PublicKey) (bool, error)
+type UserProfileService_VerifySecretFunc func(username string, passwordBase64 string) (bool, error)
 
 const (
-	FunctionGetProfile      = "GetProfile"
-	FunctionVerifyPublicKey = "VerifyPublicKey"
-	FunctionVerifySecret    = "VerifySecret"
+	Function_UserProfileService_GetProfile      = "GetProfile"
+	Function_UserProfileService_VerifyPublicKey = "VerifyPublicKey"
+	Function_UserProfileService_VerifySecret    = "VerifySecret"
 )
 
 func (m *userProfileServiceMock) GetProfile(authenticatedUser string) (configuration.UserProfile, error) {
-	m.TraceMethodCall(FunctionGetProfile, authenticatedUser)
+	m.TraceMethodCall(Function_UserProfileService_GetProfile, authenticatedUser)
 	return m.GetProfileFunc(authenticatedUser)
 }
 
 func (m *userProfileServiceMock) VerifyPublicKey(username string, key ssh.PublicKey) (bool, error) {
-	m.TraceMethodCall(FunctionVerifyPublicKey, username, key)
+	m.TraceMethodCall(Function_UserProfileService_VerifyPublicKey, username, key)
 	return m.VerifyPublicKeyFunc(username, key)
 }
 
 func (m *userProfileServiceMock) VerifySecret(username string, passwordBase64 string) (bool, error) {
-	m.TraceMethodCall(FunctionVerifySecret, username, passwordBase64)
+	m.TraceMethodCall(Function_UserProfileService_VerifySecret, username, passwordBase64)
 	return m.VerifySecretFunc(username, passwordBase64)
 }
 
@@ -65,25 +65,25 @@ func NewUserProfileServiceMock() *userProfileServiceMock {
 			return result0, result1
 		},
 	}
-	mock.AddFunction(FunctionGetProfile, "GetProfile(authenticatedUser string) (configuration.UserProfile, error)")
-	mock.AddFunction(FunctionVerifyPublicKey, "VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)")
-	mock.AddFunction(FunctionVerifySecret, "VerifySecret(username string, passwordBase64 string) (bool, error)")
+	mock.AddFunction(Function_UserProfileService_GetProfile, "GetProfile(authenticatedUser string) (configuration.UserProfile, error)")
+	mock.AddFunction(Function_UserProfileService_VerifyPublicKey, "VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)")
+	mock.AddFunction(Function_UserProfileService_VerifySecret, "VerifySecret(username string, passwordBase64 string) (bool, error)")
 	return mock
 }
 
 type containerAppConfigServiceMock struct {
 	features.MockBase
-	CreateApplicationConfigForFunc CreateApplicationConfigForFunc
+	CreateApplicationConfigForFunc ContainerAppConfigService_CreateApplicationConfigForFunc
 }
 
-type CreateApplicationConfigForFunc func(authenticatedUser string) (shims.AppConfigShim, error)
+type ContainerAppConfigService_CreateApplicationConfigForFunc func(authenticatedUser string) (shims.AppConfigShim, error)
 
 const (
-	FunctionCreateApplicationConfigFor = "CreateApplicationConfigFor"
+	Function_ContainerAppConfigService_CreateApplicationConfigFor = "CreateApplicationConfigFor"
 )
 
 func (m *containerAppConfigServiceMock) CreateApplicationConfigFor(authenticatedUser string) (shims.AppConfigShim, error) {
-	m.TraceMethodCall(FunctionCreateApplicationConfigFor, authenticatedUser)
+	m.TraceMethodCall(Function_ContainerAppConfigService_CreateApplicationConfigFor, authenticatedUser)
 	return m.CreateApplicationConfigForFunc(authenticatedUser)
 }
 
@@ -99,6 +99,6 @@ func NewContainerAppConfigServiceMock() *containerAppConfigServiceMock {
 			return result0, result1
 		},
 	}
-	mock.AddFunction(FunctionCreateApplicationConfigFor, "CreateApplicationConfigFor(authenticatedUser string) (shims.AppConfigShim, error)")
+	mock.AddFunction(Function_ContainerAppConfigService_CreateApplicationConfigFor, "CreateApplicationConfigFor(authenticatedUser string) (shims.AppConfigShim, error)")
 	return mock
 }

@@ -67,7 +67,7 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 	_ = decoder.Decode(responseBody)
 
 	// Assert
-	userProfileServiceMock.Verify(services.FunctionVerifyPublicKey, features.TimesOnce(), features.Exact(username), features.Exact(authorizedKey))
+	userProfileServiceMock.Verify(services.Function_UserProfileService_VerifyPublicKey, features.TimesOnce(), features.Exact(username), features.Exact(authorizedKey))
 
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 	assert.Equal(t, username, responseBody.AuthenticatedUsername)

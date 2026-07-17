@@ -29,7 +29,7 @@ func Test_CreateApplicationConfigFor_returns_error_if_user_not_found(t *testing.
 	assert.Error(t, err)
 	assert.Equal(t, shims.AppConfigShim{}, actual)
 
-	profileServiceMock.Verify(FunctionGetProfile, features.TimesOnce(), features.Exact(authenticatedUser))
+	profileServiceMock.Verify(Function_UserProfileService_GetProfile, features.TimesOnce(), features.Exact(authenticatedUser))
 }
 
 func Test_CreateApplicationConfigFor_returns_docker_container_configuration_for_known_user(t *testing.T) {
@@ -60,5 +60,5 @@ func Test_CreateApplicationConfigFor_returns_docker_container_configuration_for_
 	_, found := actual.Docker.Execution.NetworkConfig.EndpointsConfig[expectedContainerNetworkName]
 	assert.True(t, found)
 
-	profileServiceMock.Verify(FunctionGetProfile, features.TimesOnce(), features.Exact(authenticatedUser))
+	profileServiceMock.Verify(Function_UserProfileService_GetProfile, features.TimesOnce(), features.Exact(authenticatedUser))
 }
