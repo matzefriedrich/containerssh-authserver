@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Replaced `gofiber/fiber/v3` with `go-chi/chi/v5` to reduce vulnerability footprint.
 * Abstracted JSON encoding and decoding into a `JSONCodec` dependency for handlers.
 * Renamed mocked function identifiers for consistency across services and tests.
+* Bumped `github.com/google/go-cmp` to v0.7.0
 
 ## [v0.3.5] - 2026-07-16
 
