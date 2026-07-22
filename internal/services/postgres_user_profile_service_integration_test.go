@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"testing"
 	"time"
@@ -13,7 +12,6 @@ import (
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/crypto/ssh"
 )
 
 func Test_PostgresUserProfileService_Integration(t *testing.T) {
@@ -95,20 +93,6 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 		assert.Equal(t, []string{publicKeyStr}, profile.PublicKeys)
 		assert.Equal(t, []string{"/bin/bash"}, profile.ShellCommand)
 		assert.Equal(t, string(hashedPassword), profile.Secret)
-	})
-
-	t.Run("VerifySecret works", func(t *testing.T) {
-		passwordBase64 := base64.StdEncoding.EncodeToString([]byte(password))
-		success, err := sut.VerifySecret(username, passwordBase64)
-		assert.NoError(t, err)
-		assert.True(t, success)
-	})
-
-	t.Run("VerifyPublicKey works", func(t *testing.T) {
-		parsedKey, _, _, _, _ := ssh.ParseAuthorizedKey([]byte(publicKeyStr))
-		success, err := sut.VerifyPublicKey(username, parsedKey)
-		assert.NoError(t, err)
-		assert.True(t, success)
 	})
 
 	t.Run("GetProfile returns error for nonexistent user", func(t *testing.T) {

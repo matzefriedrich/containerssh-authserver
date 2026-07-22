@@ -1,17 +1,12 @@
 package services
 
 import (
-	"bytes"
 	"context"
-	"encoding/base64"
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
-	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/crypto/ssh"
 )
 
 type userProfileEntity struct {
@@ -42,58 +37,6 @@ type postgresUserProfileService struct {
 	pool postgresPool
 }
 
-// Key returns the unique identifier for this user profile service implementation.
-func (p *postgresUserProfileService) Key() string {
-	return "postgres"
-}
-
-// VerifySecret compares the given password with the stored password for the specified user and returns true if a match is found.
-func (p *postgresUserProfileService) VerifySecret(
-	username string,
-	passwordBase64 string) (bool, error) {
-
-	passwordBytes, decodeErr := base64.StdEncoding.DecodeString(passwordBase64)
-	if decodeErr != nil {
-		return false, fmt.Errorf("failed to decode password: %w", decodeErr)
-	}
-
-	profile, profileErr := p.GetProfile(username)
-	if profileErr != nil {
-		return false, fmt.Errorf("failed to get user profile: %w", profileErr)
-	}
-
-	err := bcrypt.CompareHashAndPassword([]byte(profile.Secret), passwordBytes)
-	if err != nil {
-		return false, fmt.Errorf("password invalid")
-	}
-
-	return true, nil
-}
-
-// VerifyPublicKey compares the given public key with stored keys for the specified user and returns true if a match is found.
-func (p *postgresUserProfileService) VerifyPublicKey(
-	username string,
-	expectedKey ssh.PublicKey) (bool, error) {
-
-	profile, err := p.GetProfile(username)
-	if err != nil {
-		return false, fmt.Errorf("failed to get user profile: %w", err)
-	}
-
-	expectedKeyBytes := expectedKey.Marshal()
-	for _, formattedPublicKey := range profile.PublicKeys {
-		key, _, _, _, sshParseKeyErr := ssh.ParseAuthorizedKey([]byte(formattedPublicKey))
-		if sshParseKeyErr != nil {
-			return false, fmt.Errorf("failed to parse public key: %w", sshParseKeyErr)
-		}
-		if bytes.Equal(key.Marshal(), expectedKeyBytes) {
-			return true, nil
-		}
-	}
-
-	return false, fmt.Errorf("no matching public key found")
-}
-
 // GetProfile retrieves the user profile for the given authenticated username from the Postgres database.
 func (p *postgresUserProfileService) GetProfile(authenticatedUsername string) (configuration.UserProfile, error) {
 
@@ -117,24 +60,13 @@ func (p *postgresUserProfileService) GetProfile(authenticatedUsername string) (c
 		return EmptyUserProfile, fmt.Errorf("failed to query user profile: %w", err)
 	}
 
-	profile := entity.ToUserProfile()
-
-	containerImageName := strings.TrimSpace(profile.Image)
-	if containerImageName == "" {
-		return EmptyUserProfile, errors.New(ErrorInvalidSessionContainerImage)
-	}
-
-	if len(profile.ShellCommand) == 0 {
-		profile.ShellCommand = []string{"/bin/sh"}
-	}
-
-	return profile, nil
+	return entity.ToUserProfile(), nil
 }
 
-var _ UserProfileService = (*postgresUserProfileService)(nil)
+var _ UserProfileBackend = (*postgresUserProfileService)(nil)
 
-// NewPostgresUserProfileService creates a new UserProfileService using a Postgres database.
-func NewPostgresUserProfileService(pool postgresPool) UserProfileService {
+// NewPostgresUserProfileService creates a new UserProfileBackend using a Postgres database.
+func NewPostgresUserProfileService(pool postgresPool) UserProfileBackend {
 	return &postgresUserProfileService{
 		pool: pool,
 	}

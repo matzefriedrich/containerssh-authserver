@@ -13,28 +13,20 @@ import (
 
 type userProfileServiceMock struct {
 	features.MockBase
-	KeyFunc             UserProfileService_KeyFunc
 	GetProfileFunc      UserProfileService_GetProfileFunc
 	VerifyPublicKeyFunc UserProfileService_VerifyPublicKeyFunc
 	VerifySecretFunc    UserProfileService_VerifySecretFunc
 }
 
-type UserProfileService_KeyFunc func() string
 type UserProfileService_GetProfileFunc func(authenticatedUser string) (configuration.UserProfile, error)
 type UserProfileService_VerifyPublicKeyFunc func(username string, key ssh.PublicKey) (bool, error)
 type UserProfileService_VerifySecretFunc func(username string, passwordBase64 string) (bool, error)
 
 const (
-	Function_UserProfileService_Key             = "Key"
 	Function_UserProfileService_GetProfile      = "GetProfile"
 	Function_UserProfileService_VerifyPublicKey = "VerifyPublicKey"
 	Function_UserProfileService_VerifySecret    = "VerifySecret"
 )
-
-func (m *userProfileServiceMock) Key() string {
-	m.TraceMethodCall(Function_UserProfileService_Key)
-	return m.KeyFunc()
-}
 
 func (m *userProfileServiceMock) GetProfile(authenticatedUser string) (configuration.UserProfile, error) {
 	m.TraceMethodCall(Function_UserProfileService_GetProfile, authenticatedUser)
@@ -57,10 +49,6 @@ var _ UserProfileService = (*userProfileServiceMock)(nil)
 func NewUserProfileServiceMock() *userProfileServiceMock {
 	mock := &userProfileServiceMock{
 		MockBase: features.NewMockBase(),
-		KeyFunc: func() string {
-			var result0 string
-			return result0
-		},
 		GetProfileFunc: func(authenticatedUser string) (configuration.UserProfile, error) {
 			var result0 configuration.UserProfile
 			var result1 error
@@ -77,10 +65,41 @@ func NewUserProfileServiceMock() *userProfileServiceMock {
 			return result0, result1
 		},
 	}
-	mock.AddFunction(Function_UserProfileService_Key, "Key() (string)")
 	mock.AddFunction(Function_UserProfileService_GetProfile, "GetProfile(authenticatedUser string) (configuration.UserProfile, error)")
 	mock.AddFunction(Function_UserProfileService_VerifyPublicKey, "VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)")
 	mock.AddFunction(Function_UserProfileService_VerifySecret, "VerifySecret(username string, passwordBase64 string) (bool, error)")
+	return mock
+}
+
+type userProfileBackendMock struct {
+	features.MockBase
+	GetProfileFunc UserProfileBackend_GetProfileFunc
+}
+
+type UserProfileBackend_GetProfileFunc func(authenticatedUser string) (configuration.UserProfile, error)
+
+const (
+	Function_UserProfileBackend_GetProfile = "GetProfile"
+)
+
+func (m *userProfileBackendMock) GetProfile(authenticatedUser string) (configuration.UserProfile, error) {
+	m.TraceMethodCall(Function_UserProfileBackend_GetProfile, authenticatedUser)
+	return m.GetProfileFunc(authenticatedUser)
+}
+
+var _ UserProfileBackend = (*userProfileBackendMock)(nil)
+
+// NewUserProfileBackendMock Creates a new configurable userProfileBackendMock object.
+func NewUserProfileBackendMock() *userProfileBackendMock {
+	mock := &userProfileBackendMock{
+		MockBase: features.NewMockBase(),
+		GetProfileFunc: func(authenticatedUser string) (configuration.UserProfile, error) {
+			var result0 configuration.UserProfile
+			var result1 error
+			return result0, result1
+		},
+	}
+	mock.AddFunction(Function_UserProfileBackend_GetProfile, "GetProfile(authenticatedUser string) (configuration.UserProfile, error)")
 	return mock
 }
 

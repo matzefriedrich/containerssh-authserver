@@ -12,11 +12,12 @@ import (
 func ApplicationServicesModule(registry types.ServiceRegistry) error {
 
 	_ = registry.RegisterModule(PgxModule)
-	_ = features.RegisterNamed[services.UserProfileService](registry,
+	_ = features.RegisterNamed[services.UserProfileBackend](registry,
 		registration.NamedServiceRegistration("static", services.NewStaticUserConfigurationProfileService, types.LifetimeSingleton),
 		registration.NamedServiceRegistration("postgres", services.NewPostgresUserProfileService, types.LifetimeScoped),
 	)
 
+	_ = registration.RegisterSingleton(registry, services.NewUserProfileIntegrationService)
 	_ = registration.RegisterTransient(registry, services.NewDockerAppConfigService)
 
 	return nil
