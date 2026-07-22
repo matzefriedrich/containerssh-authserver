@@ -12,15 +12,6 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-const (
-	ErrorUserProfileNotFound          = "user profile not found"
-	ErrorInvalidSessionContainerImage = "invalid session container image"
-)
-
-var (
-	EmptyUserProfile = configuration.UserProfile{}
-)
-
 type staticUserConfigurationProfileService struct {
 	settings *configuration.ApplicationConfiguration
 }

@@ -27,7 +27,7 @@ type UserProfile struct {
 }
 
 // LoadApplicationSettings populates the provided ApplicationConfiguration instance with values from the app config section.
-// Returns an error if the configuration is invalid or cannot be unmarshalled.
+// Returns an error if the configuration is invalid or cannot be unmarshaled.
 func LoadApplicationSettings(validations ...ApplicationConfigurationValidationRule) (*ApplicationConfiguration, error) {
 
 	const applicationSettingsSectionKey = "app"
