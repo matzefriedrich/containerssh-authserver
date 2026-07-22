@@ -16,6 +16,11 @@ type staticUserConfigurationProfileService struct {
 	settings *configuration.ApplicationConfiguration
 }
 
+// Key returns the unique identifier for this user profile service implementation.
+func (u *staticUserConfigurationProfileService) Key() string {
+	return "static"
+}
+
 // VerifySecret compares the given password with the stored password for the specified user and returns true if a match is found.
 func (u *staticUserConfigurationProfileService) VerifySecret(
 	username string,

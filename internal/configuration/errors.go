@@ -9,6 +9,7 @@ const (
 	ErrUnprivilegedPortExpected        = "port must be greater than 1024"
 	ErrInvalidPublicKeyFormat          = "invalid public key format"
 	ErrNoUsersConfigured               = "no users configured"
+	ErrPostgresConfigMissing           = "postgres configuration missing"
 )
 
 type Error struct {

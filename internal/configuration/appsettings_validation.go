@@ -2,6 +2,8 @@ package configuration
 
 import (
 	"errors"
+	"slices"
+
 	"golang.org/x/crypto/ssh"
 )
 
@@ -43,8 +45,19 @@ func EnsurePublicKeyFormat() ApplicationConfigurationValidationRule {
 // EnsureUserProfilesNotEmpty validates that the AuthServer.Users section in the configuration is not nil or empty.
 func EnsureUserProfilesNotEmpty() ApplicationConfigurationValidationRule {
 	return func(config *ApplicationConfiguration) (ValidationResult, error) {
-		if len(config.AuthServer.Users) == 0 {
-			return ValidationResult{}, errors.New(ErrNoUsersConfigured)
+		isStaticBackendConfigured := false
+		if len(config.AuthServer.Backends) == 0 {
+			isStaticBackendConfigured = true
+		} else {
+			if slices.Contains(config.AuthServer.Backends, "static") {
+				isStaticBackendConfigured = true
+			}
+		}
+
+		if isStaticBackendConfigured {
+			if len(config.AuthServer.Users) == 0 {
+				return ValidationResult{}, errors.New(ErrNoUsersConfigured)
+			}
 		}
 		return ValidationResult{}, nil
 	}

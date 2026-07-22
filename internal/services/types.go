@@ -19,6 +19,7 @@ var (
 )
 
 type UserProfileService interface {
+	Key() string
 	GetProfile(authenticatedUser string) (configuration.UserProfile, error)
 	VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)
 	VerifySecret(username string, passwordBase64 string) (bool, error)

@@ -11,10 +11,30 @@ type ApplicationConfiguration struct {
 	AuthServer AuthServerConfig `mapstructure:"authServer"`
 	LogLevel   string           `mapstructure:"logLevel"`
 	Port       int              `mapstructure:"port"`
+	Databases  DatabaseConfig   `mapstructure:"databases"`
 }
 
 type AuthServerConfig struct {
-	Users map[string]UserProfile `mapstructure:"users"`
+	Backends []string               `mapstructure:"backends"`
+	Users    map[string]UserProfile `mapstructure:"users"`
+}
+
+type DatabaseConfig struct {
+	Postgres *PostgresConfig `mapstructure:"postgres"`
+}
+
+type PostgresConfig struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Database string `mapstructure:"database"`
+	SSLMode  string `mapstructure:"sslmode"`
+}
+
+func (p PostgresConfig) ConnectionString() string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		p.Host, p.Port, p.User, p.Password, p.Database, p.SSLMode)
 }
 
 type UserProfile struct {
