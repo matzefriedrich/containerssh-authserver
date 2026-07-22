@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Abstracted JSON encoding and decoding into a `JSONCodec` dependency for handlers.
 * Renamed mocked function identifiers for consistency across services and tests.
 * Bumped `github.com/google/go-cmp` to v0.7.0
+* Bumped `github.com/matzefriedrich/parsley` from 1.5.0 to 1.5.1 [#64](https://github.com/matzefriedrich/containerssh-authserver/pull/64)
+
 
 ## [v0.3.5] - 2026-07-16
 

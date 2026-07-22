@@ -1,11 +1,11 @@
 module github.com/matzefriedrich/containerssh-authserver
 
-go 1.26.3
+go 1.26.4
 
 require (
 	github.com/docker/docker v28.5.2+incompatible
 	github.com/go-chi/chi/v5 v5.3.1
-	github.com/matzefriedrich/parsley v1.5.0
+	github.com/matzefriedrich/parsley v1.5.1
 	github.com/opencontainers/image-spec v1.1.1
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
