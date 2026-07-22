@@ -84,7 +84,7 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 	)
 	assert.NoError(t, err)
 
-	sut := NewPostgresUserProfileService(pool, tableName)
+	sut := NewPostgresUserProfileService(pool)
 
 	t.Run("GetProfile returns correct data", func(t *testing.T) {
 		profile, err := sut.GetProfile(username)

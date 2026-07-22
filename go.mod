@@ -6,7 +6,7 @@ require (
 	github.com/docker/docker v28.5.2+incompatible
 	github.com/go-chi/chi/v5 v5.3.1
 	github.com/jackc/pgx/v5 v5.10.0
-	github.com/matzefriedrich/parsley v1.5.1
+	github.com/matzefriedrich/parsley v1.5.2
 	github.com/opencontainers/image-spec v1.1.1
 	github.com/pashagolub/pgxmock/v3 v3.4.0
 	github.com/spf13/viper v1.21.0
@@ -66,6 +66,7 @@ require (
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
+	github.com/stretchr/objx v0.5.3 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.16 // indirect
 	github.com/tklauser/numcpus v0.11.0 // indirect

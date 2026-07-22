@@ -39,8 +39,12 @@ type postgresPool interface {
 }
 
 type postgresUserProfileService struct {
-	pool      postgresPool
-	tableName string
+	pool postgresPool
+}
+
+// Key returns the unique identifier for this user profile service implementation.
+func (p *postgresUserProfileService) Key() string {
+	return "postgres"
 }
 
 // VerifySecret compares the given password with the stored password for the specified user and returns true if a match is found.
@@ -94,7 +98,7 @@ func (p *postgresUserProfileService) VerifyPublicKey(
 func (p *postgresUserProfileService) GetProfile(authenticatedUsername string) (configuration.UserProfile, error) {
 
 	ctx := context.Background()
-	query := fmt.Sprintf("SELECT binds, image, networks, public_keys, shell_command, secret FROM %s WHERE username = $1", p.tableName)
+	query := "SELECT binds, image, networks, public_keys, shell_command, secret FROM authserver.user_profiles WHERE username = $1"
 
 	var entity userProfileEntity
 	err := p.pool.QueryRow(ctx, query, authenticatedUsername).Scan(
@@ -130,9 +134,8 @@ func (p *postgresUserProfileService) GetProfile(authenticatedUsername string) (c
 var _ UserProfileService = (*postgresUserProfileService)(nil)
 
 // NewPostgresUserProfileService creates a new UserProfileService using a Postgres database.
-func NewPostgresUserProfileService(pool postgresPool, tableName string) UserProfileService {
+func NewPostgresUserProfileService(pool postgresPool) UserProfileService {
 	return &postgresUserProfileService{
-		pool:      pool,
-		tableName: tableName,
+		pool: pool,
 	}
 }

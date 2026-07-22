@@ -63,6 +63,37 @@ func EnsureUserProfilesNotEmpty() ApplicationConfigurationValidationRule {
 	}
 }
 
+// EnsurePostgresConfigIfUsed validates that the Databases.Postgres section is not nil if the postgres backend is configured.
+func EnsurePostgresConfigIfUsed() ApplicationConfigurationValidationRule {
+	return func(config *ApplicationConfiguration) (ValidationResult, error) {
+		usePostgres := slices.Contains(config.AuthServer.Backends, "postgres")
+		if usePostgres && config.Databases.Postgres == nil {
+			return ValidationResult{}, errors.New(ErrPostgresConfigMissing)
+		}
+
+		if config.Databases.Postgres != nil {
+			result := ValidationResult{}
+			if config.Databases.Postgres.Host == "" {
+				result.errors = append(result.errors, errors.New("postgres host is required"))
+			}
+			if config.Databases.Postgres.Port == 0 {
+				result.errors = append(result.errors, errors.New("postgres port is required"))
+			}
+			if config.Databases.Postgres.User == "" {
+				result.errors = append(result.errors, errors.New("postgres user is required"))
+			}
+			if config.Databases.Postgres.Database == "" {
+				result.errors = append(result.errors, errors.New("postgres database name is required"))
+			}
+			if len(result.errors) > 0 {
+				return result, nil
+			}
+		}
+
+		return ValidationResult{}, nil
+	}
+}
+
 type ValidationResult struct {
 	errors []error
 }
