@@ -14,8 +14,8 @@ LDFLAGS=-X $(PACKAGE_NAME)/internal.CommitSha=$(CI_COMMIT_SHORT_SHA) \
 BINARY_NAME=authserver
 CMD_PATH=./cmd/authserver
 
-GOLANGCI_LINT_VERSION=v2.11.4
-PARSLEY_CLI_VERSION=v1.5.0
+GOLANGCI_LINT_VERSION=v2.12.2
+PARSLEY_CLI_VERSION=v1.5.1
 
 all: install-tools generate lint build
 
