@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 	"github.com/matzefriedrich/containerssh-authserver/internal/modules"
 	"github.com/matzefriedrich/containerssh-authserver/internal/resources"
@@ -16,7 +15,7 @@ import (
 
 type autoSetupApplication struct {
 	config  *configuration.ApplicationConfiguration
-	pool    *pgxpool.Pool
+	pool    services.PgxPool
 	service services.UserProfileService
 	logger  *slog.Logger
 }
@@ -54,7 +53,7 @@ func (a *autoSetupApplication) Run(ctx context.Context) error {
 
 func NewAutoSetupApp(
 	config *configuration.ApplicationConfiguration,
-	pool *pgxpool.Pool,
+	pool services.PgxPool,
 	service services.UserProfileService,
 	logger *slog.Logger) bootstrap.Application {
 	return &autoSetupApplication{

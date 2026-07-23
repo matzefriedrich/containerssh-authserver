@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/jackc/pgx/v5/pgxpool"
-
 	"github.com/jackc/pgx/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 )
@@ -32,7 +30,7 @@ func (e *userProfileEntity) ToUserProfile() configuration.UserProfile {
 }
 
 type postgresUserProfileService struct {
-	pool *pgxpool.Pool
+	pool PgxPool
 }
 
 // GetProfile retrieves the user profile for the given authenticated username from the Postgres database.
@@ -101,7 +99,7 @@ func (p *postgresUserProfileService) RegisterUser(username string, profile confi
 var _ UserProfileBackend = (*postgresUserProfileService)(nil)
 
 // NewPostgresUserProfileService creates a new UserProfileBackend using a Postgres database.
-func NewPostgresUserProfileService(pool *pgxpool.Pool) UserProfileBackend {
+func NewPostgresUserProfileService(pool PgxPool) UserProfileBackend {
 	return &postgresUserProfileService{
 		pool: pool,
 	}

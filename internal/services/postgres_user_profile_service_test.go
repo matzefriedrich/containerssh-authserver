@@ -28,7 +28,7 @@ func Test_PostgresUserProfileBackend_GetProfile_returns_profile(t *testing.T) {
 		WillReturnRows(pgxmock.NewRows([]string{"binds", "image", "networks", "public_keys", "shell_command", "secret"}).
 			AddRow(expectedBinds, expectedImage, expectedNetworks, expectedPublicKeys, expectedShellCommand, expectedSecret))
 
-	sut := NewPostgresUserProfileService(mock)
+	sut := &postgresUserProfileService{pool: mock}
 
 	// Act
 	profile, err := sut.GetProfile(username)
@@ -56,7 +56,7 @@ func Test_PostgresUserProfileBackend_GetProfile_returns_error_if_not_found(t *te
 		WithArgs(username).
 		WillReturnError(pgx.ErrNoRows)
 
-	sut := NewPostgresUserProfileService(mock)
+	sut := &postgresUserProfileService{pool: mock}
 
 	// Act
 	_, err = sut.GetProfile(username)
@@ -86,7 +86,7 @@ func Test_PostgresUserProfileBackend_RegisterUser_executes_upsert(t *testing.T) 
 		WithArgs(username, profile.Binds, profile.Image, profile.Networks, profile.PublicKeys, profile.ShellCommand, profile.Secret).
 		WillReturnResult(pgxmock.NewResult("MERGE", 1))
 
-	sut := NewPostgresUserProfileService(mock)
+	sut := &postgresUserProfileService{pool: mock}
 
 	// Act
 	err = sut.RegisterUser(username, profile)
