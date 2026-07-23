@@ -12,7 +12,9 @@ LDFLAGS=-X $(PACKAGE_NAME)/internal.CommitSha=$(CI_COMMIT_SHORT_SHA) \
         -X $(PACKAGE_NAME)/internal.ReleaseName=$(APP_RELEASE)
 
 BINARY_NAME=authserver
+AUTOSETUP_BINARY_NAME=authserver-autosetup
 CMD_PATH=./cmd/authserver
+AUTOSETUP_CMD_PATH=./cmd/authserver-autosetup
 
 GOLANGCI_LINT_VERSION=v2.12.2
 PARSLEY_CLI_VERSION=v1.5.1
@@ -21,6 +23,7 @@ all: install-tools generate lint build
 
 build: generate
 	go build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME) $(CMD_PATH)
+	go build -ldflags "$(LDFLAGS)" -o $(AUTOSETUP_BINARY_NAME) $(AUTOSETUP_CMD_PATH)
 
 test: generate
 	go test ./...
@@ -39,4 +42,4 @@ install-tools:
 	go install github.com/matzefriedrich/parsley/cmd/parsley-cli@${PARSLEY_CLI_VERSION}
 
 clean:
-	rm -f $(BINARY_NAME)
+	rm -f $(BINARY_NAME) $(AUTOSETUP_BINARY_NAME)
