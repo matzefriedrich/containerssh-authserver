@@ -18,7 +18,9 @@ ENV LDFLAGS="-X ${PACKAGE_NAME}/internal.CommitSha=${CI_COMMIT_SHORT_SHA} -X ${P
 RUN mkdir -p build/ && \
     go mod tidy && \
     CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} \
-    go build -ldflags "${LDFLAGS}" -a -o build/authserver cmd/authserver/main.go
+    go build -ldflags "${LDFLAGS}" -a -o build/authserver cmd/authserver/main.go && \
+    CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} \
+    go build -ldflags "${LDFLAGS}" -a -o build/authserver-autosetup cmd/authserver-autosetup/main.go
 
 
 FROM gcr.io/distroless/static:nonroot
