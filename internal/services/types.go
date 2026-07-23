@@ -11,6 +11,7 @@ import (
 const (
 	ErrorUserProfileNotFound          = "user profile not found"
 	ErrorInvalidSessionContainerImage = "invalid session container image"
+	ErrorReadOnlyBackend              = "read-only backend"
 )
 
 var (
@@ -22,10 +23,12 @@ type UserProfileService interface {
 	GetProfile(authenticatedUser string) (configuration.UserProfile, error)
 	VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)
 	VerifySecret(username string, passwordBase64 string) (bool, error)
+	RegisterUser(username string, profile configuration.UserProfile) error
 }
 
 type UserProfileBackend interface {
 	GetProfile(authenticatedUser string) (configuration.UserProfile, error)
+	RegisterUser(username string, profile configuration.UserProfile) error
 }
 
 type ContainerAppConfigService interface {

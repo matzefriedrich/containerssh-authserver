@@ -1,6 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS authserver;
 
-CREATE TABLE authserver.user_profiles (
+CREATE TABLE IF NOT EXISTS authserver.user_profiles
+(
     username      TEXT PRIMARY KEY,
     binds         TEXT[],
     image         TEXT,

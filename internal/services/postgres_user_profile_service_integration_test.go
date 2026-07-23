@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -99,5 +100,42 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 		_, err := sut.GetProfile("nonexistent")
 		assert.Error(t, err)
 		assert.Equal(t, ErrorUserProfileNotFound, err.Error())
+	})
+
+	t.Run("RegisterUser adds new profile", func(t *testing.T) {
+		const newUsername = "janedoe"
+		newProfile := configuration.UserProfile{
+			Binds:        []string{"/home/janedoe:/home/janedoe"},
+			Image:        "ubuntu",
+			Networks:     []string{"net2"},
+			PublicKeys:   []string{"key2"},
+			ShellCommand: []string{"/bin/zsh"},
+			Secret:       "hash2",
+		}
+
+		err := sut.RegisterUser(newUsername, newProfile)
+		assert.NoError(t, err)
+
+		profile, err := sut.GetProfile(newUsername)
+		assert.NoError(t, err)
+		assert.Equal(t, newProfile, profile)
+	})
+
+	t.Run("RegisterUser updates existing profile", func(t *testing.T) {
+		updatedProfile := configuration.UserProfile{
+			Binds:        []string{"/new:/path"},
+			Image:        "fedora",
+			Networks:     []string{"net3"},
+			PublicKeys:   []string{"key3"},
+			ShellCommand: []string{"/bin/fish"},
+			Secret:       "hash3",
+		}
+
+		err := sut.RegisterUser(username, updatedProfile)
+		assert.NoError(t, err)
+
+		profile, err := sut.GetProfile(username)
+		assert.NoError(t, err)
+		assert.Equal(t, updatedProfile, profile)
 	})
 }

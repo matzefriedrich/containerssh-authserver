@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 	"github.com/pashagolub/pgxmock/v3"
 	"github.com/stretchr/testify/assert"
 )
@@ -63,4 +64,34 @@ func Test_PostgresUserProfileBackend_GetProfile_returns_error_if_not_found(t *te
 	// Assert
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), ErrorUserProfileNotFound)
+}
+
+func Test_PostgresUserProfileBackend_RegisterUser_executes_upsert(t *testing.T) {
+	// Arrange
+	mock, err := pgxmock.NewPool()
+	assert.NoError(t, err)
+	defer mock.Close()
+
+	const username = "johndoe"
+	profile := configuration.UserProfile{
+		Binds:        []string{"/a:/b"},
+		Image:        "alpine",
+		Networks:     []string{"net1"},
+		PublicKeys:   []string{"key1"},
+		ShellCommand: []string{"/bin/sh"},
+		Secret:       "hash",
+	}
+
+	mock.ExpectExec("MERGE INTO authserver.user_profiles").
+		WithArgs(username, profile.Binds, profile.Image, profile.Networks, profile.PublicKeys, profile.ShellCommand, profile.Secret).
+		WillReturnResult(pgxmock.NewResult("MERGE", 1))
+
+	sut := NewPostgresUserProfileService(mock)
+
+	// Act
+	err = sut.RegisterUser(username, profile)
+
+	// Assert
+	assert.NoError(t, err)
+	assert.NoError(t, mock.ExpectationsWereMet())
 }

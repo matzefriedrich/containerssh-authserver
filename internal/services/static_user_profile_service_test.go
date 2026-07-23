@@ -53,3 +53,17 @@ func Test_StaticUserProfileBackend_GetProfile_returns_error_for_unknown_user(t *
 	assert.Error(t, err)
 	assert.Equal(t, ErrorUserProfileNotFound, err.Error())
 }
+
+func Test_StaticUserProfileBackend_RegisterUser_returns_readonly_error(t *testing.T) {
+
+	// Arrange
+	settings := &configuration.ApplicationConfiguration{}
+	sut := NewStaticUserConfigurationProfileService(settings)
+
+	// Act
+	err := sut.RegisterUser("any", configuration.UserProfile{})
+
+	// Assert
+	assert.Error(t, err)
+	assert.Equal(t, ErrorReadOnlyBackend, err.Error())
+}

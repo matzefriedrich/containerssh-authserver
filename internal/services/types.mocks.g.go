@@ -16,16 +16,19 @@ type userProfileServiceMock struct {
 	GetProfileFunc      UserProfileService_GetProfileFunc
 	VerifyPublicKeyFunc UserProfileService_VerifyPublicKeyFunc
 	VerifySecretFunc    UserProfileService_VerifySecretFunc
+	RegisterUserFunc    UserProfileService_RegisterUserFunc
 }
 
 type UserProfileService_GetProfileFunc func(authenticatedUser string) (configuration.UserProfile, error)
 type UserProfileService_VerifyPublicKeyFunc func(username string, key ssh.PublicKey) (bool, error)
 type UserProfileService_VerifySecretFunc func(username string, passwordBase64 string) (bool, error)
+type UserProfileService_RegisterUserFunc func(username string, profile configuration.UserProfile) error
 
 const (
 	Function_UserProfileService_GetProfile      = "GetProfile"
 	Function_UserProfileService_VerifyPublicKey = "VerifyPublicKey"
 	Function_UserProfileService_VerifySecret    = "VerifySecret"
+	Function_UserProfileService_RegisterUser    = "RegisterUser"
 )
 
 func (m *userProfileServiceMock) GetProfile(authenticatedUser string) (configuration.UserProfile, error) {
@@ -41,6 +44,11 @@ func (m *userProfileServiceMock) VerifyPublicKey(username string, key ssh.Public
 func (m *userProfileServiceMock) VerifySecret(username string, passwordBase64 string) (bool, error) {
 	m.TraceMethodCall(Function_UserProfileService_VerifySecret, username, passwordBase64)
 	return m.VerifySecretFunc(username, passwordBase64)
+}
+
+func (m *userProfileServiceMock) RegisterUser(username string, profile configuration.UserProfile) error {
+	m.TraceMethodCall(Function_UserProfileService_RegisterUser, username, profile)
+	return m.RegisterUserFunc(username, profile)
 }
 
 var _ UserProfileService = (*userProfileServiceMock)(nil)
@@ -64,27 +72,40 @@ func NewUserProfileServiceMock() *userProfileServiceMock {
 			var result1 error
 			return result0, result1
 		},
+		RegisterUserFunc: func(username string, profile configuration.UserProfile) error {
+			var result0 error
+			return result0
+		},
 	}
 	mock.AddFunction(Function_UserProfileService_GetProfile, "GetProfile(authenticatedUser string) (configuration.UserProfile, error)")
 	mock.AddFunction(Function_UserProfileService_VerifyPublicKey, "VerifyPublicKey(username string, key ssh.PublicKey) (bool, error)")
 	mock.AddFunction(Function_UserProfileService_VerifySecret, "VerifySecret(username string, passwordBase64 string) (bool, error)")
+	mock.AddFunction(Function_UserProfileService_RegisterUser, "RegisterUser(username string, profile configuration.UserProfile) (error)")
 	return mock
 }
 
 type userProfileBackendMock struct {
 	features.MockBase
-	GetProfileFunc UserProfileBackend_GetProfileFunc
+	GetProfileFunc   UserProfileBackend_GetProfileFunc
+	RegisterUserFunc UserProfileBackend_RegisterUserFunc
 }
 
 type UserProfileBackend_GetProfileFunc func(authenticatedUser string) (configuration.UserProfile, error)
+type UserProfileBackend_RegisterUserFunc func(username string, profile configuration.UserProfile) error
 
 const (
-	Function_UserProfileBackend_GetProfile = "GetProfile"
+	Function_UserProfileBackend_GetProfile   = "GetProfile"
+	Function_UserProfileBackend_RegisterUser = "RegisterUser"
 )
 
 func (m *userProfileBackendMock) GetProfile(authenticatedUser string) (configuration.UserProfile, error) {
 	m.TraceMethodCall(Function_UserProfileBackend_GetProfile, authenticatedUser)
 	return m.GetProfileFunc(authenticatedUser)
+}
+
+func (m *userProfileBackendMock) RegisterUser(username string, profile configuration.UserProfile) error {
+	m.TraceMethodCall(Function_UserProfileBackend_RegisterUser, username, profile)
+	return m.RegisterUserFunc(username, profile)
 }
 
 var _ UserProfileBackend = (*userProfileBackendMock)(nil)
@@ -98,8 +119,13 @@ func NewUserProfileBackendMock() *userProfileBackendMock {
 			var result1 error
 			return result0, result1
 		},
+		RegisterUserFunc: func(username string, profile configuration.UserProfile) error {
+			var result0 error
+			return result0
+		},
 	}
 	mock.AddFunction(Function_UserProfileBackend_GetProfile, "GetProfile(authenticatedUser string) (configuration.UserProfile, error)")
+	mock.AddFunction(Function_UserProfileBackend_RegisterUser, "RegisterUser(username string, profile configuration.UserProfile) (error)")
 	return mock
 }
 

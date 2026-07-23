@@ -21,6 +21,11 @@ func (u *staticUserConfigurationProfileService) GetProfile(authenticatedUsername
 	return profile, nil
 }
 
+// RegisterUser is not supported by the static configuration backend as it is read-only.
+func (u *staticUserConfigurationProfileService) RegisterUser(_ string, _ configuration.UserProfile) error {
+	return errors.New(ErrorReadOnlyBackend)
+}
+
 var _ UserProfileBackend = (*staticUserConfigurationProfileService)(nil)
 
 // NewStaticUserConfigurationProfileService creates a new UserProfileBackend using static application configuration.

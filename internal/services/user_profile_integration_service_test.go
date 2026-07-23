@@ -15,11 +15,19 @@ import (
 
 // Fixed mock
 type fixedMockBackend struct {
-	getProfile func(string) (configuration.UserProfile, error)
+	getProfile   func(string) (configuration.UserProfile, error)
+	registerUser func(string, configuration.UserProfile) error
 }
 
 func (m *fixedMockBackend) GetProfile(u string) (configuration.UserProfile, error) {
 	return m.getProfile(u)
+}
+
+func (m *fixedMockBackend) RegisterUser(u string, p configuration.UserProfile) error {
+	if m.registerUser != nil {
+		return m.registerUser(u, p)
+	}
+	return nil
 }
 
 func Test_UserProfileIntegrationService_GetProfile_iterates_backends(t *testing.T) {
@@ -131,4 +139,70 @@ func Test_UserProfileIntegrationService_VerifyPublicKey(t *testing.T) {
 	// Assert
 	assert.NoError(t, err)
 	assert.True(t, success)
+}
+
+func Test_UserProfileIntegrationService_RegisterUser_skips_readonly_backends(t *testing.T) {
+	// Arrange
+	settings := &configuration.ApplicationConfiguration{
+		AuthServer: configuration.AuthServerConfig{
+			Backends: []string{"readonly", "writable"},
+		},
+	}
+
+	backend1 := &fixedMockBackend{
+		registerUser: func(string, configuration.UserProfile) error {
+			return errors.New(ErrorReadOnlyBackend)
+		},
+	}
+	backend2 := &fixedMockBackend{
+		registerUser: func(string, configuration.UserProfile) error {
+			return nil
+		},
+	}
+
+	factory := func(key string) (UserProfileBackend, error) {
+		if key == "readonly" {
+			return backend1, nil
+		}
+		if key == "writable" {
+			return backend2, nil
+		}
+		return nil, errors.New("unexpected backend key")
+	}
+
+	sut := NewUserProfileIntegrationService(factory, settings)
+
+	// Act
+	err := sut.RegisterUser("user", configuration.UserProfile{})
+
+	// Assert
+	assert.NoError(t, err)
+}
+
+func Test_UserProfileIntegrationService_RegisterUser_returns_error_if_no_writable_backend(t *testing.T) {
+	// Arrange
+	settings := &configuration.ApplicationConfiguration{
+		AuthServer: configuration.AuthServerConfig{
+			Backends: []string{"readonly"},
+		},
+	}
+
+	backend := &fixedMockBackend{
+		registerUser: func(string, configuration.UserProfile) error {
+			return errors.New(ErrorReadOnlyBackend)
+		},
+	}
+
+	factory := func(key string) (UserProfileBackend, error) {
+		return backend, nil
+	}
+
+	sut := NewUserProfileIntegrationService(factory, settings)
+
+	// Act
+	err := sut.RegisterUser("user", configuration.UserProfile{})
+
+	// Assert
+	assert.Error(t, err)
+	assert.Equal(t, "no writable backend found", err.Error())
 }

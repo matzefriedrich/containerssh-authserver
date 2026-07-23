@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
@@ -12,10 +13,8 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-type UserProfileBackendFactory func(string) (UserProfileBackend, error)
-
 type userProfileIntegrationService struct {
-	factory  UserProfileBackendFactory
+	factory  func(string) (UserProfileBackend, error)
 	settings *configuration.ApplicationConfiguration
 }
 
@@ -89,8 +88,36 @@ func (s *userProfileIntegrationService) VerifySecret(username string, passwordBa
 	return true, nil
 }
 
+func (s *userProfileIntegrationService) RegisterUser(
+	username string,
+	profile configuration.UserProfile) error {
+	for _, backendKey := range s.settings.AuthServer.Backends {
+		backend, backendFactoryErr := s.factory(backendKey)
+		if backendFactoryErr != nil || backend == nil {
+			slog.Error("failed to create backend",
+				slog.String("backendKey", backendKey),
+				slog.Any("err", backendFactoryErr))
+			continue
+		}
+
+		registerErr := backend.RegisterUser(username, profile)
+		if registerErr != nil {
+			if registerErr.Error() == ErrorReadOnlyBackend {
+				continue
+			}
+			return fmt.Errorf("failed to register user with backend: %w", registerErr)
+		}
+
+		return nil
+	}
+
+	return errors.New("no writable backend found")
+}
+
 // NewUserProfileIntegrationService creates a new UserProfileService that integrates multiple backends.
-func NewUserProfileIntegrationService(factory UserProfileBackendFactory, settings *configuration.ApplicationConfiguration) UserProfileService {
+func NewUserProfileIntegrationService(
+	factory func(string) (UserProfileBackend, error),
+	settings *configuration.ApplicationConfiguration) UserProfileService {
 	return &userProfileIntegrationService{
 		factory:  factory,
 		settings: settings,

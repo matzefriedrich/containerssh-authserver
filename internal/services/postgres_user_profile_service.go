@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
 )
@@ -29,12 +31,8 @@ func (e *userProfileEntity) ToUserProfile() configuration.UserProfile {
 	}
 }
 
-type postgresPool interface {
-	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
-}
-
 type postgresUserProfileService struct {
-	pool postgresPool
+	pool *pgxpool.Pool
 }
 
 // GetProfile retrieves the user profile for the given authenticated username from the Postgres database.
@@ -63,10 +61,47 @@ func (p *postgresUserProfileService) GetProfile(authenticatedUsername string) (c
 	return entity.ToUserProfile(), nil
 }
 
+// RegisterUser adds or updates a user profile in the Postgres database.
+func (p *postgresUserProfileService) RegisterUser(username string, profile configuration.UserProfile) error {
+
+	ctx := context.Background()
+	query := `
+		MERGE INTO authserver.user_profiles AS target
+		USING (VALUES ($1::TEXT, $2::TEXT[], $3::TEXT, $4::TEXT[], $5::TEXT[], $6::TEXT[], $7::TEXT)) AS source(username, binds, image, networks, public_keys, shell_command, secret)
+		ON (target.username = source.username)
+		WHEN MATCHED THEN
+			UPDATE SET
+				binds = source.binds,
+				image = source.image,
+				networks = source.networks,
+				public_keys = source.public_keys,
+				shell_command = source.shell_command,
+				secret = source.secret
+		WHEN NOT MATCHED THEN
+			INSERT (username, binds, image, networks, public_keys, shell_command, secret)
+			VALUES (source.username, source.binds, source.image, source.networks, source.public_keys, source.shell_command, source.secret)`
+
+	_, err := p.pool.Exec(ctx, query,
+		username,
+		profile.Binds,
+		profile.Image,
+		profile.Networks,
+		profile.PublicKeys,
+		profile.ShellCommand,
+		profile.Secret,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to register user: %w", err)
+	}
+
+	return nil
+}
+
 var _ UserProfileBackend = (*postgresUserProfileService)(nil)
 
 // NewPostgresUserProfileService creates a new UserProfileBackend using a Postgres database.
-func NewPostgresUserProfileService(pool postgresPool) UserProfileBackend {
+func NewPostgresUserProfileService(pool *pgxpool.Pool) UserProfileBackend {
 	return &postgresUserProfileService{
 		pool: pool,
 	}
