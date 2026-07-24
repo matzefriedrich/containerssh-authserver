@@ -71,7 +71,7 @@ func (p *postgresUserProfileService) RegisterUser(
 
 	query := `
 		MERGE INTO authserver.user_profiles AS target
-		USING (VALUES ($1::TEXT, $2::TEXT[], $3::TEXT, $4::TEXT[], $5::TEXT[], $6::TEXT[], $7::TEXT)) AS source(username, binds, image, networks, public_keys, shell_command, secret)
+		USING (VALUES ($1::VARCHAR(32), $2::TEXT[], $3::VARCHAR(384), $4::VARCHAR(64)[], $5::TEXT[], $6::TEXT[], $7::VARCHAR(255))) AS source(username, binds, image, networks, public_keys, shell_command, secret)
 		ON (target.username = source.username)
 		WHEN MATCHED THEN
 			UPDATE SET

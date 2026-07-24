@@ -52,13 +52,13 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 	_, err = pool.Exec(ctx, fmt.Sprintf(`
 		CREATE SCHEMA IF NOT EXISTS authserver;
 		CREATE TABLE %s (
-			username TEXT PRIMARY KEY,
+			username VARCHAR(32) PRIMARY KEY,
 			binds TEXT[],
-			image TEXT,
-			networks TEXT[],
+			image VARCHAR(384),
+			networks VARCHAR(64)[],
 			public_keys TEXT[],
 			shell_command TEXT[],
-			secret TEXT
+			secret VARCHAR(255)
 		)
 	`, tableName))
 	assert.NoError(t, err)
