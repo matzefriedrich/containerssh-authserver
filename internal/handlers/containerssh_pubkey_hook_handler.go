@@ -63,6 +63,7 @@ func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(w http.Response
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = h.jsonCodec.Encode(w, response)
+	w.WriteHeader(http.StatusOK)
 }
 
 func parsePublicKey(formattedPublicKey string) (ssh.PublicKey, error) {

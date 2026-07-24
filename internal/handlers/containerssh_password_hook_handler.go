@@ -51,6 +51,7 @@ func (h *passwordHookHandler) handlePasswordAuthenticationRequest(w http.Respons
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = h.jsonCodec.Encode(w, response)
+	w.WriteHeader(http.StatusOK)
 }
 
 func NewPasswordHookHandler(profileService types.UserProfileService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {

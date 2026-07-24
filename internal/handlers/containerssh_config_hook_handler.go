@@ -51,6 +51,7 @@ func (h *configHookHandler) handleUserConfigurationRequest(w http.ResponseWriter
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = h.jsonCodec.Encode(w, response)
+	w.WriteHeader(http.StatusOK)
 }
 
 func NewConfigHookHandler(containerAppConfigService types.ContainerAppConfigService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
