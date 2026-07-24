@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"github.com/pashagolub/pgxmock/v3"
 	"github.com/stretchr/testify/assert"
 )
@@ -31,7 +31,7 @@ func Test_PostgresUserProfileBackend_GetProfile_returns_profile(t *testing.T) {
 	sut := &postgresUserProfileService{pool: mock}
 
 	// Act
-	profile, err := sut.GetProfile(username)
+	profile, err := sut.GetProfile(t.Context(), username)
 
 	// Assert
 	assert.NoError(t, err)
@@ -59,11 +59,11 @@ func Test_PostgresUserProfileBackend_GetProfile_returns_error_if_not_found(t *te
 	sut := &postgresUserProfileService{pool: mock}
 
 	// Act
-	_, err = sut.GetProfile(username)
+	_, err = sut.GetProfile(t.Context(), username)
 
 	// Assert
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), ErrorUserProfileNotFound)
+	assert.Contains(t, err.Error(), types.ErrorUserProfileNotFound)
 }
 
 func Test_PostgresUserProfileBackend_RegisterUser_executes_upsert(t *testing.T) {
@@ -73,7 +73,7 @@ func Test_PostgresUserProfileBackend_RegisterUser_executes_upsert(t *testing.T) 
 	defer mock.Close()
 
 	const username = "johndoe"
-	profile := configuration.UserProfile{
+	profile := types.UserProfile{
 		Binds:        []string{"/a:/b"},
 		Image:        "alpine",
 		Networks:     []string{"net1"},
@@ -89,7 +89,7 @@ func Test_PostgresUserProfileBackend_RegisterUser_executes_upsert(t *testing.T) 
 	sut := &postgresUserProfileService{pool: mock}
 
 	// Act
-	err = sut.RegisterUser(username, profile)
+	err = sut.RegisterUser(t.Context(), username, profile)
 
 	// Assert
 	assert.NoError(t, err)

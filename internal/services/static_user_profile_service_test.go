@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,7 +12,7 @@ func Test_StaticUserProfileBackend_GetProfile_returns_correct_profile(t *testing
 
 	// Arrange
 	const username = "johndoe"
-	expectedProfile := configuration.UserProfile{
+	expectedProfile := types.UserProfile{
 		PublicKeys: []string{"ssh-rsa ..."},
 		Image:      "some-docker-image:tag",
 		Secret:     "hash",
@@ -19,7 +20,7 @@ func Test_StaticUserProfileBackend_GetProfile_returns_correct_profile(t *testing
 
 	settings := &configuration.ApplicationConfiguration{
 		AuthServer: configuration.AuthServerConfig{
-			Users: map[string]configuration.UserProfile{
+			Users: map[string]types.UserProfile{
 				username: expectedProfile,
 			},
 		},
@@ -28,7 +29,7 @@ func Test_StaticUserProfileBackend_GetProfile_returns_correct_profile(t *testing
 	sut := NewStaticUserConfigurationProfileService(settings)
 
 	// Act
-	actual, err := sut.GetProfile(username)
+	actual, err := sut.GetProfile(t.Context(), username)
 
 	// Assert
 	assert.NoError(t, err)
@@ -40,18 +41,18 @@ func Test_StaticUserProfileBackend_GetProfile_returns_error_for_unknown_user(t *
 	// Arrange
 	settings := &configuration.ApplicationConfiguration{
 		AuthServer: configuration.AuthServerConfig{
-			Users: map[string]configuration.UserProfile{},
+			Users: map[string]types.UserProfile{},
 		},
 	}
 
 	sut := NewStaticUserConfigurationProfileService(settings)
 
 	// Act
-	_, err := sut.GetProfile("unknown")
+	_, err := sut.GetProfile(t.Context(), "unknown")
 
 	// Assert
 	assert.Error(t, err)
-	assert.Equal(t, ErrorUserProfileNotFound, err.Error())
+	assert.Equal(t, types.ErrorUserProfileNotFound, err.Error())
 }
 
 func Test_StaticUserProfileBackend_RegisterUser_returns_readonly_error(t *testing.T) {
@@ -61,9 +62,9 @@ func Test_StaticUserProfileBackend_RegisterUser_returns_readonly_error(t *testin
 	sut := NewStaticUserConfigurationProfileService(settings)
 
 	// Act
-	err := sut.RegisterUser("any", configuration.UserProfile{})
+	err := sut.RegisterUser(t.Context(), "any", types.UserProfile{})
 
 	// Assert
 	assert.Error(t, err)
-	assert.Equal(t, ErrorReadOnlyBackend, err.Error())
+	assert.Equal(t, types.ErrorReadOnlyBackend, err.Error())
 }

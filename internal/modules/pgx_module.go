@@ -6,17 +6,17 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
-	"github.com/matzefriedrich/containerssh-authserver/internal/services"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"github.com/matzefriedrich/parsley/pkg/registration"
-	"github.com/matzefriedrich/parsley/pkg/types"
+	parsleytypes "github.com/matzefriedrich/parsley/pkg/types"
 )
 
-func PgxModule(registry types.ServiceRegistry) error {
+func PgxModule(registry parsleytypes.ServiceRegistry) error {
 	_ = registration.RegisterSingleton(registry, pgxPoolFactory)
 	return nil
 }
 
-func pgxPoolFactory(ctx context.Context, settings *configuration.ApplicationConfiguration) (services.PgxPool, error) {
+func pgxPoolFactory(ctx context.Context, settings *configuration.ApplicationConfiguration) (types.PgxPool, error) {
 	postgres := settings.Databases.Postgres
 	if postgres == nil {
 		return nil, fmt.Errorf("no postgres database configuration found")

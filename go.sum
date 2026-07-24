@@ -77,8 +77,6 @@ github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 h1:6E+4a0GO5zZEnZ
 github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0/go.mod h1:zJYVVT2jmtg6P3p1VtQj7WsuWi/y4VnjVBn7F8KPB3I=
 github.com/magiconair/properties v1.8.10 h1:s31yESBquKXCV9a/ScB3ESkOjUYYv+X0rg8SYxI99mE=
 github.com/magiconair/properties v1.8.10/go.mod h1:Dhd985XPs7jluiymwWYZ0G4Z61jb3vdS329zhj2hYo0=
-github.com/matzefriedrich/parsley v1.5.1 h1:BDTpaxTbyBYCjqyOFisrXTBql/rAHfpBBxNTNhLbNs0=
-github.com/matzefriedrich/parsley v1.5.1/go.mod h1:fIwetd9atvwt5Z2tv4HyG+q6quLdWzCwK9A+Pw60mw4=
 github.com/matzefriedrich/parsley v1.5.2 h1:qSPznbx7wB/m6L1xncSWuezIPEntNoEVALRgEChWZ2E=
 github.com/matzefriedrich/parsley v1.5.2/go.mod h1:fIwetd9atvwt5Z2tv4HyG+q6quLdWzCwK9A+Pw60mw4=
 github.com/mdelapenya/tlscert v0.2.0 h1:7H81W6Z/4weDvZBNOfQte5GpIMo0lGYEeWbkGp5LJHI=

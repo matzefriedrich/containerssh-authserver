@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"github.com/spf13/viper"
 )
 
@@ -15,8 +16,8 @@ type ApplicationConfiguration struct {
 }
 
 type AuthServerConfig struct {
-	Backends []string               `mapstructure:"backends"`
-	Users    map[string]UserProfile `mapstructure:"users"`
+	Backends []string                     `mapstructure:"backends"`
+	Users    map[string]types.UserProfile `mapstructure:"users"`
 }
 
 type DatabaseConfig struct {
@@ -35,15 +36,6 @@ type PostgresConfig struct {
 func (p PostgresConfig) ConnectionString() string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		p.Host, p.Port, p.User, p.Password, p.Database, p.SSLMode)
-}
-
-type UserProfile struct {
-	Binds        []string `mapstructure:"binds"`
-	Image        string   `mapstructure:"image"`
-	Networks     []string `mapstructure:"networks"`
-	PublicKeys   []string `mapstructure:"publicKeys"`
-	ShellCommand []string `mapstructure:"shellCommand"`
-	Secret       string   `mapstructure:"secret"`
 }
 
 // LoadApplicationSettings populates the provided ApplicationConfiguration instance with values from the app config section.

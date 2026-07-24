@@ -2,6 +2,7 @@ package services
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -9,34 +10,37 @@ import (
 	"strings"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/crypto/ssh"
 )
 
 type userProfileIntegrationService struct {
-	factory  func(string) (UserProfileBackend, error)
+	factory  func(string) (types.UserProfileBackend, error)
 	settings *configuration.ApplicationConfiguration
 }
 
-func (s *userProfileIntegrationService) GetProfile(authenticatedUser string) (configuration.UserProfile, error) {
+func (s *userProfileIntegrationService) GetProfile(
+	ctx context.Context,
+	authenticatedUser string) (types.UserProfile, error) {
 	for _, backendKey := range s.settings.AuthServer.Backends {
 		backend, err := s.factory(backendKey)
 		if err != nil || backend == nil {
 			continue
 		}
 
-		profile, err := backend.GetProfile(authenticatedUser)
+		profile, err := backend.GetProfile(ctx, authenticatedUser)
 		if err != nil {
-			if err.Error() == ErrorUserProfileNotFound {
+			if err.Error() == types.ErrorUserProfileNotFound {
 				continue
 			}
-			return EmptyUserProfile, err
+			return types.EmptyUserProfile, err
 		}
 
 		// Common normalization logic
 		containerImageName := strings.TrimSpace(profile.Image)
 		if containerImageName == "" {
-			return EmptyUserProfile, errors.New(ErrorInvalidSessionContainerImage)
+			return types.EmptyUserProfile, errors.New(types.ErrorInvalidSessionContainerImage)
 		}
 
 		if len(profile.ShellCommand) == 0 {
@@ -46,11 +50,13 @@ func (s *userProfileIntegrationService) GetProfile(authenticatedUser string) (co
 		return profile, nil
 	}
 
-	return EmptyUserProfile, errors.New(ErrorUserProfileNotFound)
+	return types.EmptyUserProfile, errors.New(types.ErrorUserProfileNotFound)
 }
 
-func (s *userProfileIntegrationService) VerifyPublicKey(username string, key ssh.PublicKey) (bool, error) {
-	profile, err := s.GetProfile(username)
+func (s *userProfileIntegrationService) VerifyPublicKey(
+	ctx context.Context,
+	username string, key ssh.PublicKey) (bool, error) {
+	profile, err := s.GetProfile(ctx, username)
 	if err != nil {
 		return false, err
 	}
@@ -69,13 +75,16 @@ func (s *userProfileIntegrationService) VerifyPublicKey(username string, key ssh
 	return false, fmt.Errorf("no matching public key found")
 }
 
-func (s *userProfileIntegrationService) VerifySecret(username string, passwordBase64 string) (bool, error) {
+func (s *userProfileIntegrationService) VerifySecret(
+	ctx context.Context,
+	username string,
+	passwordBase64 string) (bool, error) {
 	passwordBytes, err := base64.StdEncoding.DecodeString(passwordBase64)
 	if err != nil {
 		return false, fmt.Errorf("failed to decode password: %w", err)
 	}
 
-	profile, err := s.GetProfile(username)
+	profile, err := s.GetProfile(ctx, username)
 	if err != nil {
 		return false, err
 	}
@@ -89,8 +98,9 @@ func (s *userProfileIntegrationService) VerifySecret(username string, passwordBa
 }
 
 func (s *userProfileIntegrationService) RegisterUser(
+	ctx context.Context,
 	username string,
-	profile configuration.UserProfile) error {
+	profile types.UserProfile) error {
 	for _, backendKey := range s.settings.AuthServer.Backends {
 		backend, backendFactoryErr := s.factory(backendKey)
 		if backendFactoryErr != nil || backend == nil {
@@ -100,9 +110,9 @@ func (s *userProfileIntegrationService) RegisterUser(
 			continue
 		}
 
-		registerErr := backend.RegisterUser(username, profile)
+		registerErr := backend.RegisterUser(ctx, username, profile)
 		if registerErr != nil {
-			if registerErr.Error() == ErrorReadOnlyBackend {
+			if registerErr.Error() == types.ErrorReadOnlyBackend {
 				continue
 			}
 			return fmt.Errorf("failed to register user with backend: %w", registerErr)
@@ -116,8 +126,8 @@ func (s *userProfileIntegrationService) RegisterUser(
 
 // NewUserProfileIntegrationService creates a new UserProfileService that integrates multiple backends.
 func NewUserProfileIntegrationService(
-	factory func(string) (UserProfileBackend, error),
-	settings *configuration.ApplicationConfiguration) UserProfileService {
+	factory func(string) (types.UserProfileBackend, error),
+	settings *configuration.ApplicationConfiguration) types.UserProfileService {
 	return &userProfileIntegrationService{
 		factory:  factory,
 		settings: settings,

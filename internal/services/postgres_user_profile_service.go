@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 )
 
 type userProfileEntity struct {
@@ -18,8 +18,8 @@ type userProfileEntity struct {
 	Secret       string
 }
 
-func (e *userProfileEntity) ToUserProfile() configuration.UserProfile {
-	return configuration.UserProfile{
+func (e *userProfileEntity) ToUserProfile() types.UserProfile {
+	return types.UserProfile{
 		Binds:        e.Binds,
 		Image:        e.Image,
 		Networks:     e.Networks,
@@ -30,14 +30,18 @@ func (e *userProfileEntity) ToUserProfile() configuration.UserProfile {
 }
 
 type postgresUserProfileService struct {
-	pool PgxPool
+	pool types.PgxPool
 }
 
 // GetProfile retrieves the user profile for the given authenticated username from the Postgres database.
-func (p *postgresUserProfileService) GetProfile(authenticatedUsername string) (configuration.UserProfile, error) {
+func (p *postgresUserProfileService) GetProfile(
+	ctx context.Context,
+	authenticatedUsername string) (types.UserProfile, error) {
 
-	ctx := context.Background()
-	query := "SELECT binds, image, networks, public_keys, shell_command, secret FROM authserver.user_profiles WHERE username = $1"
+	query := `
+		SELECT binds, image, networks, public_keys, shell_command, secret 
+		FROM authserver.user_profiles 
+		WHERE username = $1`
 
 	var entity userProfileEntity
 	err := p.pool.QueryRow(ctx, query, authenticatedUsername).Scan(
@@ -51,18 +55,20 @@ func (p *postgresUserProfileService) GetProfile(authenticatedUsername string) (c
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return EmptyUserProfile, errors.New(ErrorUserProfileNotFound)
+			return types.EmptyUserProfile, errors.New(types.ErrorUserProfileNotFound)
 		}
-		return EmptyUserProfile, fmt.Errorf("failed to query user profile: %w", err)
+		return types.EmptyUserProfile, fmt.Errorf("failed to query user profile: %w", err)
 	}
 
 	return entity.ToUserProfile(), nil
 }
 
 // RegisterUser adds or updates a user profile in the Postgres database.
-func (p *postgresUserProfileService) RegisterUser(username string, profile configuration.UserProfile) error {
+func (p *postgresUserProfileService) RegisterUser(
+	ctx context.Context,
+	username string,
+	profile types.UserProfile) error {
 
-	ctx := context.Background()
 	query := `
 		MERGE INTO authserver.user_profiles AS target
 		USING (VALUES ($1::TEXT, $2::TEXT[], $3::TEXT, $4::TEXT[], $5::TEXT[], $6::TEXT[], $7::TEXT)) AS source(username, binds, image, networks, public_keys, shell_command, secret)
@@ -96,10 +102,10 @@ func (p *postgresUserProfileService) RegisterUser(username string, profile confi
 	return nil
 }
 
-var _ UserProfileBackend = (*postgresUserProfileService)(nil)
+var _ types.UserProfileBackend = (*postgresUserProfileService)(nil)
 
 // NewPostgresUserProfileService creates a new UserProfileBackend using a Postgres database.
-func NewPostgresUserProfileService(pool PgxPool) UserProfileBackend {
+func NewPostgresUserProfileService(pool types.PgxPool) types.UserProfileBackend {
 	return &postgresUserProfileService{
 		pool: pool,
 	}

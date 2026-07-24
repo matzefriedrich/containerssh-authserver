@@ -17,7 +17,7 @@ CMD_PATH=./cmd/authserver
 AUTOSETUP_CMD_PATH=./cmd/authserver-autosetup
 
 GOLANGCI_LINT_VERSION=v2.12.2
-PARSLEY_CLI_VERSION=v1.5.1
+PARSLEY_CLI_VERSION=v1.5.2
 
 all: install-tools generate lint build
 

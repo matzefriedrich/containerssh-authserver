@@ -7,11 +7,11 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
-	"github.com/matzefriedrich/containerssh-authserver/internal/services"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 )
 
 type passwordHookHandler struct {
-	profileService services.UserProfileService
+	profileService types.UserProfileService
 	jsonCodec      JSONCodec
 	logEvents      *authHookEvents
 }
@@ -32,7 +32,8 @@ func (h *passwordHookHandler) handlePasswordAuthenticationRequest(w http.Respons
 
 	username := strings.TrimSpace(request.Username)
 
-	passwordAccepted, verificationErr := h.profileService.VerifySecret(username, request.PasswordBase64)
+	ctx := r.Context()
+	passwordAccepted, verificationErr := h.profileService.VerifySecret(ctx, username, request.PasswordBase64)
 	if verificationErr != nil {
 		h.logEvents.PasswordAuthenticationFailed(request.ConnectionId, username, verificationErr)
 	}
@@ -52,7 +53,7 @@ func (h *passwordHookHandler) handlePasswordAuthenticationRequest(w http.Respons
 	_ = h.jsonCodec.Encode(w, response)
 }
 
-func NewPasswordHookHandler(profileService services.UserProfileService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
+func NewPasswordHookHandler(profileService types.UserProfileService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
 	return &passwordHookHandler{
 		profileService: profileService,
 		jsonCodec:      jsonCodec,

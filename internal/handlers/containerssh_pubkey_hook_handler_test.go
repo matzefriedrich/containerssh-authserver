@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/json"
 	"io"
@@ -12,7 +13,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
-	"github.com/matzefriedrich/containerssh-authserver/internal/services"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"github.com/matzefriedrich/parsley/pkg/features"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/ed25519"
@@ -27,8 +28,8 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 	authorizedKey := string(ssh.MarshalAuthorizedKey(sshPublicKey))
 	const username = "john-doe"
 
-	userProfileServiceMock := services.NewUserProfileServiceMock()
-	userProfileServiceMock.VerifyPublicKeyFunc = func(authenticatedUsername string, key ssh.PublicKey) (bool, error) {
+	userProfileServiceMock := types.NewUserProfileServiceMock()
+	userProfileServiceMock.VerifyPublicKeyFunc = func(_ context.Context, authenticatedUsername string, key ssh.PublicKey) (bool, error) {
 		keyString := ssh.MarshalAuthorizedKey(key)
 		return string(keyString) == authorizedKey &&
 			strings.Compare(username, authenticatedUsername) == 0, nil
@@ -67,7 +68,7 @@ func Test_PubKeyHookHandler_handle_pubkey_request_indicates_success_for_valid_pu
 	_ = decoder.Decode(responseBody)
 
 	// Assert
-	userProfileServiceMock.Verify(services.Function_UserProfileService_VerifyPublicKey, features.TimesOnce(), features.Exact(username), features.Exact(authorizedKey))
+	userProfileServiceMock.Verify(types.Function_UserProfileService_VerifyPublicKey, features.TimesOnce(), features.Exact(username), features.Exact(authorizedKey))
 
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 	assert.Equal(t, username, responseBody.AuthenticatedUsername)

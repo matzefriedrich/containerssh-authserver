@@ -1,13 +1,12 @@
 package services
 
 import (
-	"context"
 	"fmt"
 	"testing"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -20,7 +19,7 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 		t.Skip("skipping integration test in short mode")
 	}
 
-	ctx := context.Background()
+	ctx := t.Context()
 
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:16-alpine",
@@ -86,7 +85,7 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 	sut := NewPostgresUserProfileService(pool)
 
 	t.Run("GetProfile returns correct data", func(t *testing.T) {
-		profile, err := sut.GetProfile(username)
+		profile, err := sut.GetProfile(t.Context(), username)
 		assert.NoError(t, err)
 		assert.Equal(t, "some-image", profile.Image)
 		assert.Equal(t, []string{"/a:/b"}, profile.Binds)
@@ -97,14 +96,14 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 	})
 
 	t.Run("GetProfile returns error for nonexistent user", func(t *testing.T) {
-		_, err := sut.GetProfile("nonexistent")
+		_, err := sut.GetProfile(t.Context(), "nonexistent")
 		assert.Error(t, err)
-		assert.Equal(t, ErrorUserProfileNotFound, err.Error())
+		assert.Equal(t, types.ErrorUserProfileNotFound, err.Error())
 	})
 
 	t.Run("RegisterUser adds new profile", func(t *testing.T) {
 		const newUsername = "janedoe"
-		newProfile := configuration.UserProfile{
+		newProfile := types.UserProfile{
 			Binds:        []string{"/home/janedoe:/home/janedoe"},
 			Image:        "ubuntu",
 			Networks:     []string{"net2"},
@@ -113,16 +112,16 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 			Secret:       "hash2",
 		}
 
-		err := sut.RegisterUser(newUsername, newProfile)
+		err := sut.RegisterUser(t.Context(), newUsername, newProfile)
 		assert.NoError(t, err)
 
-		profile, err := sut.GetProfile(newUsername)
+		profile, err := sut.GetProfile(t.Context(), newUsername)
 		assert.NoError(t, err)
 		assert.Equal(t, newProfile, profile)
 	})
 
 	t.Run("RegisterUser updates existing profile", func(t *testing.T) {
-		updatedProfile := configuration.UserProfile{
+		updatedProfile := types.UserProfile{
 			Binds:        []string{"/new:/path"},
 			Image:        "fedora",
 			Networks:     []string{"net3"},
@@ -131,10 +130,10 @@ func Test_PostgresUserProfileService_Integration(t *testing.T) {
 			Secret:       "hash3",
 		}
 
-		err := sut.RegisterUser(username, updatedProfile)
+		err := sut.RegisterUser(t.Context(), username, updatedProfile)
 		assert.NoError(t, err)
 
-		profile, err := sut.GetProfile(username)
+		profile, err := sut.GetProfile(t.Context(), username)
 		assert.NoError(t, err)
 		assert.Equal(t, updatedProfile, profile)
 	})

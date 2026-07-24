@@ -1,12 +1,14 @@
 package services
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	"testing"
 
 	"github.com/matzefriedrich/containerssh-authserver/internal/configuration"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/crypto/ed25519"
@@ -15,17 +17,17 @@ import (
 
 // Fixed mock
 type fixedMockBackend struct {
-	getProfile   func(string) (configuration.UserProfile, error)
-	registerUser func(string, configuration.UserProfile) error
+	getProfile   func(context.Context, string) (types.UserProfile, error)
+	registerUser func(context.Context, string, types.UserProfile) error
 }
 
-func (m *fixedMockBackend) GetProfile(u string) (configuration.UserProfile, error) {
-	return m.getProfile(u)
+func (m *fixedMockBackend) GetProfile(ctx context.Context, u string) (types.UserProfile, error) {
+	return m.getProfile(ctx, u)
 }
 
-func (m *fixedMockBackend) RegisterUser(u string, p configuration.UserProfile) error {
+func (m *fixedMockBackend) RegisterUser(ctx context.Context, username string, profile types.UserProfile) error {
 	if m.registerUser != nil {
-		return m.registerUser(u, p)
+		return m.registerUser(ctx, username, profile)
 	}
 	return nil
 }
@@ -39,17 +41,17 @@ func Test_UserProfileIntegrationService_GetProfile_iterates_backends(t *testing.
 	}
 
 	backend1 := &fixedMockBackend{
-		getProfile: func(string) (configuration.UserProfile, error) {
-			return EmptyUserProfile, errors.New(ErrorUserProfileNotFound)
+		getProfile: func(context.Context, string) (types.UserProfile, error) {
+			return types.EmptyUserProfile, errors.New(types.ErrorUserProfileNotFound)
 		},
 	}
 	backend2 := &fixedMockBackend{
-		getProfile: func(string) (configuration.UserProfile, error) {
-			return configuration.UserProfile{Image: "img2"}, nil
+		getProfile: func(context.Context, string) (types.UserProfile, error) {
+			return types.UserProfile{Image: "img2"}, nil
 		},
 	}
 
-	factory := func(key string) (UserProfileBackend, error) {
+	factory := func(key string) (types.UserProfileBackend, error) {
 		if key == "first" {
 			return backend1, nil
 		}
@@ -62,7 +64,7 @@ func Test_UserProfileIntegrationService_GetProfile_iterates_backends(t *testing.
 	sut := NewUserProfileIntegrationService(factory, settings)
 
 	// Act
-	profile, err := sut.GetProfile("any")
+	profile, err := sut.GetProfile(t.Context(), "any")
 
 	// Assert
 	assert.NoError(t, err)
@@ -83,22 +85,22 @@ func Test_UserProfileIntegrationService_VerifySecret(t *testing.T) {
 	}
 
 	backend := &fixedMockBackend{
-		getProfile: func(u string) (configuration.UserProfile, error) {
+		getProfile: func(ctx context.Context, u string) (types.UserProfile, error) {
 			if u == username {
-				return configuration.UserProfile{Secret: string(hash), Image: "img"}, nil
+				return types.UserProfile{Secret: string(hash), Image: "img"}, nil
 			}
-			return EmptyUserProfile, errors.New(ErrorUserProfileNotFound)
+			return types.EmptyUserProfile, errors.New(types.ErrorUserProfileNotFound)
 		},
 	}
 
-	factory := func(key string) (UserProfileBackend, error) {
+	factory := func(key string) (types.UserProfileBackend, error) {
 		return backend, nil
 	}
 
 	sut := NewUserProfileIntegrationService(factory, settings)
 
 	// Act
-	success, err := sut.VerifySecret(username, passwordBase64)
+	success, err := sut.VerifySecret(t.Context(), username, passwordBase64)
 
 	// Assert
 	assert.NoError(t, err)
@@ -119,22 +121,22 @@ func Test_UserProfileIntegrationService_VerifyPublicKey(t *testing.T) {
 	}
 
 	backend := &fixedMockBackend{
-		getProfile: func(u string) (configuration.UserProfile, error) {
+		getProfile: func(ctx context.Context, u string) (types.UserProfile, error) {
 			if u == username {
-				return configuration.UserProfile{PublicKeys: []string{authorizedKey}, Image: "img"}, nil
+				return types.UserProfile{PublicKeys: []string{authorizedKey}, Image: "img"}, nil
 			}
-			return EmptyUserProfile, errors.New(ErrorUserProfileNotFound)
+			return types.EmptyUserProfile, errors.New(types.ErrorUserProfileNotFound)
 		},
 	}
 
-	factory := func(key string) (UserProfileBackend, error) {
+	factory := func(key string) (types.UserProfileBackend, error) {
 		return backend, nil
 	}
 
 	sut := NewUserProfileIntegrationService(factory, settings)
 
 	// Act
-	success, err := sut.VerifyPublicKey(username, sshPublicKey)
+	success, err := sut.VerifyPublicKey(t.Context(), username, sshPublicKey)
 
 	// Assert
 	assert.NoError(t, err)
@@ -150,17 +152,17 @@ func Test_UserProfileIntegrationService_RegisterUser_skips_readonly_backends(t *
 	}
 
 	backend1 := &fixedMockBackend{
-		registerUser: func(string, configuration.UserProfile) error {
-			return errors.New(ErrorReadOnlyBackend)
+		registerUser: func(context.Context, string, types.UserProfile) error {
+			return errors.New(types.ErrorReadOnlyBackend)
 		},
 	}
 	backend2 := &fixedMockBackend{
-		registerUser: func(string, configuration.UserProfile) error {
+		registerUser: func(context.Context, string, types.UserProfile) error {
 			return nil
 		},
 	}
 
-	factory := func(key string) (UserProfileBackend, error) {
+	factory := func(key string) (types.UserProfileBackend, error) {
 		if key == "readonly" {
 			return backend1, nil
 		}
@@ -173,7 +175,7 @@ func Test_UserProfileIntegrationService_RegisterUser_skips_readonly_backends(t *
 	sut := NewUserProfileIntegrationService(factory, settings)
 
 	// Act
-	err := sut.RegisterUser("user", configuration.UserProfile{})
+	err := sut.RegisterUser(t.Context(), "user", types.UserProfile{})
 
 	// Assert
 	assert.NoError(t, err)
@@ -188,19 +190,19 @@ func Test_UserProfileIntegrationService_RegisterUser_returns_error_if_no_writabl
 	}
 
 	backend := &fixedMockBackend{
-		registerUser: func(string, configuration.UserProfile) error {
-			return errors.New(ErrorReadOnlyBackend)
+		registerUser: func(context.Context, string, types.UserProfile) error {
+			return errors.New(types.ErrorReadOnlyBackend)
 		},
 	}
 
-	factory := func(key string) (UserProfileBackend, error) {
+	factory := func(key string) (types.UserProfileBackend, error) {
 		return backend, nil
 	}
 
 	sut := NewUserProfileIntegrationService(factory, settings)
 
 	// Act
-	err := sut.RegisterUser("user", configuration.UserProfile{})
+	err := sut.RegisterUser(t.Context(), "user", types.UserProfile{})
 
 	// Assert
 	assert.Error(t, err)

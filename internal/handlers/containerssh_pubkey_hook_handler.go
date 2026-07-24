@@ -7,13 +7,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
-	"github.com/matzefriedrich/containerssh-authserver/internal/services"
-
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 	"golang.org/x/crypto/ssh"
 )
 
 type pubKeyHookHandler struct {
-	profileService services.UserProfileService
+	profileService types.UserProfileService
 	jsonCodec      JSONCodec
 	logEvents      *authHookEvents
 }
@@ -45,7 +44,8 @@ func (h *pubKeyHookHandler) handlePublicKeyAuthenticationRequest(w http.Response
 
 	username := strings.TrimSpace(request.Username)
 
-	publicKeyAccepted, verificationErr := h.profileService.VerifyPublicKey(username, requestPublicKey)
+	ctx := r.Context()
+	publicKeyAccepted, verificationErr := h.profileService.VerifyPublicKey(ctx, username, requestPublicKey)
 	if verificationErr != nil {
 		h.logEvents.PublicKeyAuthenticationFailed(request.ConnectionId, username, verificationErr)
 	}
@@ -73,7 +73,7 @@ func parsePublicKey(formattedPublicKey string) (ssh.PublicKey, error) {
 	return publicKey, nil
 }
 
-func NewPubKeyHookHandler(profileService services.UserProfileService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
+func NewPubKeyHookHandler(profileService types.UserProfileService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
 	return &pubKeyHookHandler{
 		profileService: profileService,
 		jsonCodec:      jsonCodec,
