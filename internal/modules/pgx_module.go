@@ -22,5 +22,16 @@ func pgxPoolFactory(ctx context.Context, settings *configuration.ApplicationConf
 		return nil, fmt.Errorf("no postgres database configuration found")
 	}
 	connectionString := postgres.ConnectionString()
-	return pgxpool.New(ctx, connectionString)
+	pool, err := pgxpool.New(ctx, connectionString)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create postgres pool: %w", err)
+	}
+
+	err = pool.Ping(ctx)
+	if err != nil {
+		pool.Close()
+		return nil, fmt.Errorf("failed to ping postgres: %w", err)
+	}
+
+	return pool, nil
 }
