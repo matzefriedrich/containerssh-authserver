@@ -8,14 +8,42 @@
 
 # containerssh-authserver
 
-**containerssh-authserver** is a configurable authentication server application designed to work with [ContainerSSH](https://containerssh.io/) as a webhook backend, by implementing the [ContainerSSH authentication API](https://containerssh.io/v0.5/reference/api/authconfig) . It allows user-specific Docker container profiles to be defined in a simple YAML configuration file, enabling per-user images, shell commands, bind-mounts and network connections.
+**containerssh-authserver** is a configurable authentication server application designed to work with [ContainerSSH](https://containerssh.io/) as a webhook backend, by implementing the [ContainerSSH authentication API](https://containerssh.io/v0.5/reference/api/authconfig). It allows user-specific Docker container profiles to be defined in either a simple YAML configuration file or a PostgreSQL database, enabling per-user images, shell commands, bind-mounts, and network connections.
 
 
 ## Prerequisites
 
-* Go 1.26.3 or newer (for building from source)
+* Go 1.26.4 or newer (for building from source)
 * Docker 20.10+ (or compatible), with Docker Compose (for the demo), Docker API version 1.41 
 * openssl, ssh-keygen
+
+## Database Backends
+
+**containerssh-authserver** supports multiple backends for user profiles, allowing for both simple static configurations and dynamic database-driven setups:
+
+- **Static (YAML)**: Define users directly in the `config.yaml` file under `app.authServer.users`.
+- **PostgreSQL**: Store and manage user profiles in a PostgreSQL database for better scalability and dynamic updates.
+
+You can configure which backends to use in the `app.authServer.backends` list. If multiple backends are enabled, they are queried in order until a user is found.
+
+### PostgreSQL Schema
+
+When using the PostgreSQL backend, the application expects a `user_profiles` table in the `authserver` schema:
+
+```sql
+CREATE TABLE authserver.user_profiles
+(
+    username      VARCHAR(32) PRIMARY KEY,
+    binds         TEXT[],
+    image         VARCHAR(384),
+    networks      VARCHAR(64)[],
+    public_keys   TEXT[],
+    shell_command TEXT[],
+    secret        VARCHAR(255)
+);
+```
+
+The `username` is limited to 32 characters (Linux limit), the `image` to 384 characters (Docker name + tag limit), and each network name to 64 characters.
 
 ## Installation & Building
 
@@ -51,11 +79,15 @@ The `containerssh` service comes with a minimal configuration file (see `docker/
 
 ## Start the demo stack
 
-Use the following command to build and run `containerssh-authserver` in conjunction with `containerssh`:
+The demo stack includes **containerssh-authserver**, a **PostgreSQL** database, and **ContainerSSH**. It is pre-configured to use both PostgreSQL and static YAML backends.
+
+Use the following command to build and run the entire stack:
 
 ```sh
 docker compose -f docker/docker-compose.yml up --build
 ```
+
+The stack also includes a `postgres-seed` service that automatically initializes the database schema and seeds it with demo users.
 
 Once started, you can connect to `containerssh` as `johndoe` using the generated private key and get a shell to a container as configured, for instance:
 
