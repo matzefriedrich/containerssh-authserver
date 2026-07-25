@@ -6,11 +6,11 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/matzefriedrich/containerssh-authserver/internal/handlers/models"
-	"github.com/matzefriedrich/containerssh-authserver/internal/services"
+	"github.com/matzefriedrich/containerssh-authserver/internal/types"
 )
 
 type configHookHandler struct {
-	containerAppConfigService services.ContainerAppConfigService
+	containerAppConfigService types.ContainerAppConfigService
 	jsonCodec                 JSONCodec
 	logger                    *slog.Logger
 }
@@ -31,7 +31,7 @@ func (h *configHookHandler) handleUserConfigurationRequest(w http.ResponseWriter
 	}
 
 	authenticatedUsername := request.AuthenticatedUsername
-	cfg, err := h.containerAppConfigService.CreateApplicationConfigFor(authenticatedUsername)
+	cfg, err := h.containerAppConfigService.CreateApplicationConfigFor(r.Context(), authenticatedUsername)
 	if err != nil {
 		h.logger.Error("Cannot create application config",
 			slog.String("username", authenticatedUsername),
@@ -51,9 +51,10 @@ func (h *configHookHandler) handleUserConfigurationRequest(w http.ResponseWriter
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = h.jsonCodec.Encode(w, response)
+	w.WriteHeader(http.StatusOK)
 }
 
-func NewConfigHookHandler(containerAppConfigService services.ContainerAppConfigService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
+func NewConfigHookHandler(containerAppConfigService types.ContainerAppConfigService, jsonCodec JSONCodec, logger *slog.Logger) RouteHandler {
 	return &configHookHandler{
 		containerAppConfigService: containerAppConfigService,
 		jsonCodec:                 jsonCodec,

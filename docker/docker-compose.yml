@@ -8,6 +8,10 @@ services:
 
     restart: on-failure
 
+    depends_on:
+      postgres:
+        condition: service_healthy
+
     environment:
       AUTHSERVER_CONFIG_PATH: "/var/run/authserver"
 
@@ -48,6 +52,49 @@ services:
       - backend
       - containerssh-control-plane
 
+  postgres-seed:
+    image: mobymatze/containerssh-authserver-autosetup
+    build: 
+      context: ../
+      dockerfile: Dockerfile
+    entrypoint: ["./authserver-autosetup"]
+
+    environment:
+      AUTHSERVER_CONFIG_PATH: "/var/run/authserver"
+
+    volumes:
+      - "./services/authserver/config.yaml:/var/run/authserver/config.yaml:ro"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:16-alpine
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authserver -d authserver"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+    environment:
+      POSTGRES_DB: authserver
+      POSTGRES_USER: authserver
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    networks:
+      - backend
+
+    ports:
+      - "9876:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 networks:
 
   backend:
@@ -55,4 +102,7 @@ networks:
 
   containerssh-control-plane:
     driver: bridge
-    
+
+volumes:
+  postgres_data:
+    driver: local

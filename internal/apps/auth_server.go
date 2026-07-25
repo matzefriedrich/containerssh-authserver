@@ -1,8 +1,9 @@
-package internal
+package apps
 
 import (
 	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
@@ -45,7 +46,7 @@ func (a *authServerApplication) Run(ctx context.Context) error {
 		_ = server.Shutdown(shutdownCtx)
 	}()
 
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 

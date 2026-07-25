@@ -1,0 +1,42 @@
+app:
+
+  port: 5000
+
+  logLevel: Debug
+
+  databases:
+    postgres:
+      host: localhost
+      port: 9876
+      user: "authserver"
+      password: "Hwv3gRJMxv6mZVPqurHg35M0dJapjrbc"
+      database: "authserver"
+      sslMode: disable
+
+  authServer:
+    backends:
+      - postgres
+      - static
+
+    users:
+
+      - johndoe:
+          publicKeys:
+            - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIArlhna9c5NLHKlDXkjpDNLUvw0Zj6cUTfTFELhKN7ek"
+
+          secret: "$2y$05$w70R4jrHOpto9cKyUaNYNezWM3ZEZWF7.H8mmJvl8GGDdhm2kpAUi"
+
+          image: alpine:3.21
+          shellCommand: /bin/sh
+          binds:
+          networks:
+
+      - pgadmin:
+          publicKeys:
+            - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIArlhna9c5NLHKlDXkjpDNLUvw0Zj6cUTfTFELhKN7ek"
+
+          image: postgres:16-alpine
+          shellCommand: /bin/sh
+          binds:
+          networks:
+            - postgres

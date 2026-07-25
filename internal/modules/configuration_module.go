@@ -32,7 +32,8 @@ func ApplicationConfigurationModule(registry types.ServiceRegistry) error {
 	settings, configurationErr := configuration.LoadApplicationSettings(
 		configuration.EnsureUnprivilegedPortOrDefault(5000),
 		configuration.EnsureUserProfilesNotEmpty(),
-		configuration.EnsurePublicKeyFormat())
+		configuration.EnsurePublicKeyFormat(),
+		configuration.EnsurePostgresConfigIfUsed())
 
 	if configurationErr != nil {
 		panic(configurationErr)

@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/matzefriedrich/containerssh-authserver/internal"
+	"github.com/matzefriedrich/containerssh-authserver/internal/apps"
 	"github.com/matzefriedrich/containerssh-authserver/internal/modules"
 
 	"github.com/matzefriedrich/parsley/pkg/bootstrap"
@@ -15,7 +15,7 @@ func main() {
 
 	ctx := context.Background()
 
-	err := bootstrap.RunParsleyApplication(ctx, internal.NewChiApp, func(registry types.ServiceRegistry) error {
+	err := bootstrap.RunParsleyApplication(ctx, apps.NewChiApp, func(registry types.ServiceRegistry) error {
 
 		_ = registry.RegisterModule(modules.ApplicationConfigurationModule)
 		_ = registry.RegisterModule(modules.LoggingModule)
