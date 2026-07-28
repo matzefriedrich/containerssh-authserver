@@ -1,0 +1,10 @@
+.git
+bin/
+build/
+docker/
+Makefile
+build.sh
+README.md
+CHANGELOG.md
+DOCKERHUB.md
+LICENSE
