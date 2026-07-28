@@ -5,6 +5,7 @@ services:
     build: 
       context: ../
       dockerfile: Dockerfile
+      target: authserver
 
     restart: on-failure
 
@@ -57,7 +58,7 @@ services:
     build: 
       context: ../
       dockerfile: Dockerfile
-    entrypoint: ["./authserver-autosetup"]
+      target: authserver-autosetup
 
     environment:
       AUTHSERVER_CONFIG_PATH: "/var/run/authserver"

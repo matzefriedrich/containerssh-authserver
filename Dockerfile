@@ -23,9 +23,17 @@ RUN mkdir -p build/ && \
     go build -ldflags "${LDFLAGS}" -a -o build/authserver-autosetup cmd/authserver-autosetup/main.go
 
 
-FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/distroless/static:nonroot AS authserver
 
 WORKDIR /app
-COPY --from=build /repo/build .
+COPY --from=build /repo/build/authserver .
 
 ENTRYPOINT [ "./authserver" ]
+
+
+FROM gcr.io/distroless/static:nonroot AS authserver-autosetup
+
+WORKDIR /app
+COPY --from=build /repo/build/authserver-autosetup .
+
+ENTRYPOINT [ "./authserver-autosetup" ]

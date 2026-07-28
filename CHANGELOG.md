@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unreleased]
+
+### Added
+
+* Added `docker-build` target to the `Makefile` for local image generation. [#66](https://github.com/matzefriedrich/containerssh-authserver/pull/66)
+
+### Changed
+
+* Refactored `Dockerfile` into a multi-stage build to support independent `authserver` and `authserver-autosetup` images. [#66](https://github.com/matzefriedrich/containerssh-authserver/pull/66)
+* Updated `docker-compose.yml` to specify build targets for `authserver` and `authserver-autosetup` services. [#66](https://github.com/matzefriedrich/containerssh-authserver/pull/66)
+
+
 ## [v0.4.0] - 2026-07-17
 
 ### Changed
