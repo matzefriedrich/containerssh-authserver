@@ -44,7 +44,7 @@ jobs:
             echo "continue=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build the Docker image
+      - name: Build the Docker images
         id: docker-build
         run: |
 
@@ -55,15 +55,25 @@ jobs:
           fi
 
           IMAGE_NAME="mobymatze/containerssh-authserver"
-          IMAGE_NAME_WITH_TAG="$IMAGE_NAME:$APP_VERSION"
-          echo "qualified_image_tag=$IMAGE_NAME_WITH_TAG" >> $GITHUB_OUTPUT
 
+          # Build authserver
           docker build \
+            --target authserver \
             --build-arg APP_RELEASE_DATE="$APP_RELEASE_DATE" \
             --build-arg APP_RELEASE="$GITHUB_REPOSITORY" \
             --build-arg APP_VERSION="$APP_VERSION" \
             --build-arg CI_COMMIT_SHORT_SHA="$GITHUB_SHA" \
-            -t "$IMAGE_NAME_WITH_TAG" \
+            -t "$IMAGE_NAME:$APP_VERSION" \
+            -f Dockerfile .
+
+          # Build authserver-autosetup
+          docker build \
+            --target authserver-autosetup \
+            --build-arg APP_RELEASE_DATE="$APP_RELEASE_DATE" \
+            --build-arg APP_RELEASE="$GITHUB_REPOSITORY" \
+            --build-arg APP_VERSION="$APP_VERSION" \
+            --build-arg CI_COMMIT_SHORT_SHA="$GITHUB_SHA" \
+            -t "${IMAGE_NAME}-autosetup:$APP_VERSION" \
             -f Dockerfile .
            
       - name: Login to Docker Hub
@@ -73,10 +83,11 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_SECRET }}
 
-      - name: Push Docker image
+      - name: Push Docker images
         if: steps.check-branch.outputs.continue == 'true'
         run: |
           IMAGE_NAME="mobymatze/containerssh-authserver"
           APP_VERSION=${{ github.ref_name }}
 
           docker push "$IMAGE_NAME:$APP_VERSION"
+          docker push "${IMAGE_NAME}-autosetup:$APP_VERSION"
