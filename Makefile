@@ -25,6 +25,9 @@ build: generate
 	go build -ldflags "$(LDFLAGS)" -o $(BINARY_NAME) $(CMD_PATH)
 	go build -ldflags "$(LDFLAGS)" -o $(AUTOSETUP_BINARY_NAME) $(AUTOSETUP_CMD_PATH)
 
+docker-build:
+	./build.sh
+
 test: generate
 	go test ./...
 
